@@ -823,7 +823,7 @@
   <div class="section-label">Get In Touch</div>
   <h2 class="section-title" style="margin-bottom:1.5rem;">Let's Work Together</h2>
   <p style="font-family:'IBM Plex Mono',monospace;font-size:0.85rem;color:var(--muted);margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.8;">Open to security research collaborations, bug bounty partnerships, AI/ML projects, and freelance opportunities.</p>
-  <a href="mailto:abrardar.00003085389@gmail.com" class="contact-email">abrardar.00003085389@gmail.com</a>
+  <a href="/cdn-cgi/l/email-protection#2e4f4c5c4f5c4a4f5c001e1e1e1e1d1e161b1d16176e49434f4742004d4143" class="contact-email"><span class="__cf_email__" data-cfemail="caaba8b8abb8aeabb8e4fafafafaf9faf2fff9f2f38aada7aba3a6e4a9a5a7">[email&#160;protected]</span></a>
   <div class="socials">
     <a href="https://github.com/abrarxploit" target="_blank" class="social-link">⌥ GitHub</a>
     <a href="https://linkedin.com/in/abrardar" target="_blank" class="social-link">⌥ LinkedIn</a>
@@ -839,7 +839,7 @@
 </footer>
 
 <!-- THREE.JS + GLTFLoader -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 // ── GLTFLoader inline (r128 compatible) ──────────────────────────────────────
 THREE.GLTFLoader = (function () {
@@ -1229,7 +1229,7 @@ THREE.GLTFLoader = (function () {
   // Load GLB
   var loader = new THREE.GLTFLoader();
   loader.load(
-    '/mnt/user-data/uploads/model.glb',
+    'model.glb',
     function (gltf) {
       var model = gltf.scene;
       // Center and scale
@@ -1295,18 +1295,14 @@ var mx = 0, my = 0, rx = 0, ry = 0;
 document.addEventListener('mousemove', function (e) { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
 (function lerp() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(lerp); })();
 
-// ── LOADER HIDE ──────────────────────────────────────────────────────────────
-setTimeout(function () { document.getElementById('loader').classList.add('hidden'); }, 2000);
+// ── LOADER HIDE — always dismisses after 2.5s no matter what ────────────────
+function hideLoader() { var l=document.getElementById('loader'); if(l) l.classList.add('hidden'); }
+setTimeout(hideLoader, 2500);
+window.addEventListener('load', function() { setTimeout(hideLoader, 600); });
 
 // ── REVEAL ON SCROLL ─────────────────────────────────────────────────────────
 var reveals = document.querySelectorAll('.reveal');
 reveals.forEach(function(el, i){ el.style.transitionDelay = (i % 3) * 0.1 + 's'; });
 var observer = new IntersectionObserver(function (entries) {
   entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-}, { threshold: 0.1 });
-reveals.forEach(function (el) { observer.observe(el); });
-// Trigger hero immediately
-setTimeout(function(){ reveals.forEach(function(el){ if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible'); }); }, 100);
-</script>
-</body>
-</html>
+}, { threshold: 0.1 })
