@@ -181,53 +181,63 @@
   }
   .btn-ghost:hover { border-color: var(--neon); color: var(--neon); }
 
-  /* 3D MODEL VIEWER */
+  /* HERO VISUAL */
   .hero-right {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 1;
+    display: flex; justify-content: center; align-items: center;
+    position: relative; z-index: 1;
   }
   #model-container {
-    width: 520px;
-    height: 520px;
-    position: relative;
-  }
-  #model-container::before {
-    content: '';
-    position: absolute; inset: -2px;
-    border-radius: 50%;
-    background: conic-gradient(from 0deg, var(--neon), var(--neon2), var(--neon3), var(--neon));
-    animation: spin 8s linear infinite;
-    z-index: -1;
-    opacity: 0.6;
-    filter: blur(2px);
-  }
-  #model-container::after {
-    content: '';
-    position: absolute; inset: 2px;
-    background: var(--bg);
-    border-radius: 50%;
-    z-index: -1;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  #three-canvas {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 50%;
+    width: 460px; height: 460px; position: relative;
   }
   .model-hint {
-    position: absolute;
-    bottom: -2rem;
-    left: 50%;
+    position: absolute; bottom: -2rem; left: 50%;
     transform: translateX(-50%);
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    white-space: nowrap;
+    font-size: 0.65rem; color: var(--muted);
+    letter-spacing: 0.1em; white-space: nowrap;
   }
+  #css3d-scene {
+    width: 100%; height: 100%;
+    position: relative; display: flex;
+    align-items: center; justify-content: center;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin-rev { to { transform: rotate(-360deg); } }
+  @keyframes spin3 { to { transform: rotateX(60deg) rotate(360deg); } }
+  @keyframes float { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-12px) scale(1.03);} }
+  @keyframes pulse-glow { 0%,100%{box-shadow:0 0 40px 10px rgba(0,245,196,0.3),0 0 80px 20px rgba(0,245,196,0.1);} 50%{box-shadow:0 0 60px 20px rgba(0,245,196,0.5),0 0 120px 40px rgba(0,245,196,0.2);} }
+  @keyframes orbit { from{transform:rotate(var(--start,0deg)) translateX(var(--r)) rotate(calc(-1*var(--start,0deg)));} to{transform:rotate(calc(var(--start,0deg) + 360deg)) translateX(var(--r)) rotate(calc(-1*(var(--start,0deg)+360deg)));} }
+  .orbit-ring {
+    position: absolute; border-radius: 50%; border: 1px solid;
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+  }
+  .ring1 { width: 320px; height: 320px; border-color: rgba(0,245,196,0.2); transform: translate(-50%,-50%) rotateX(70deg); animation: spin 12s linear infinite; }
+  .ring2 { width: 250px; height: 250px; border-color: rgba(123,47,255,0.25); transform: translate(-50%,-50%) rotateX(70deg) rotateZ(60deg); animation: spin-rev 9s linear infinite; }
+  .ring3 { width: 390px; height: 390px; border-color: rgba(255,60,110,0.12); transform: translate(-50%,-50%) rotateX(70deg) rotateZ(120deg); animation: spin 20s linear infinite; }
+  .core-sphere {
+    width: 130px; height: 130px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #1a2a2a, #050508);
+    border: 1px solid rgba(0,245,196,0.4);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 10;
+    animation: float 4s ease-in-out infinite, pulse-glow 3s ease-in-out infinite;
+  }
+  .sphere-inner {
+    font-family: 'Space Mono', monospace;
+    font-size: 2rem; font-weight: 700;
+    color: var(--neon); letter-spacing: -0.05em;
+    text-shadow: 0 0 20px var(--neon);
+  }
+  .particle {
+    position: absolute; width: 8px; height: 8px;
+    border-radius: 50%; top: 50%; left: 50%;
+  }
+  .p1 { background: var(--neon); box-shadow: 0 0 8px var(--neon); --r: 180px; --start: 0deg; animation: orbit 6s linear infinite; }
+  .p2 { background: var(--neon2); box-shadow: 0 0 8px var(--neon2); --r: 150px; --start: 60deg; animation: orbit 8s linear infinite reverse; }
+  .p3 { background: var(--neon3); box-shadow: 0 0 8px var(--neon3); --r: 200px; --start: 120deg; animation: orbit 10s linear infinite; }
+  .p4 { background: var(--neon); box-shadow: 0 0 6px var(--neon); --r: 170px; --start: 180deg; animation: orbit 7s linear infinite reverse; }
+  .p5 { background: var(--neon2); box-shadow: 0 0 6px var(--neon2); --r: 190px; --start: 240deg; animation: orbit 9s linear infinite; }
+  .p6 { background: var(--neon3); box-shadow: 0 0 6px var(--neon3); --r: 160px; --start: 300deg; animation: orbit 11s linear infinite reverse; }
 
   /* SECTIONS */
   section {
@@ -838,455 +848,7 @@
   <span>abrarxploit · Security Researcher · AIML Engineer</span>
 </footer>
 
-<!-- THREE.JS + GLTFLoader -->
-<script src="https://unpkg.com/three@0.128.0/build/three.min.js" crossorigin="anonymous"></script>
-<script>
-// ── GLTFLoader inline (r128 compatible) ──────────────────────────────────────
-THREE.GLTFLoader = (function () {
-  function GLTFLoader(manager) {
-    THREE.Loader.call(this, manager);
-    this.dracoLoader = null;
-    this.ktx2Loader = null;
-    this.meshoptDecoder = null;
-    this.pluginCallbacks = [];
-    this.register(function (parser) { return new GLTFMaterialsClearcoatExtension(parser); });
-    this.register(function (parser) { return new GLTFTextureBasisUExtension(parser); });
-    this.register(function (parser) { return new GLTFTextureWebPExtension(parser); });
-    this.register(function (parser) { return new GLTFMaterialsSheenExtension(parser); });
-    this.register(function (parser) { return new GLTFMaterialsTransmissionExtension(parser); });
-    this.register(function (parser) { return new GLTFMaterialsVolumeExtension(parser); });
-    this.register(function (parser) { return new GLTFMaterialsIorExtension(parser); });
-    this.register(function (parser) { return new GLTFMaterialsSpecularExtension(parser); });
-    this.register(function (parser) { return new GLTFLightsExtension(parser); });
-    this.register(function (parser) { return new GLTFMeshoptCompression(parser); });
-  }
-  GLTFLoader.prototype = Object.assign(Object.create(THREE.Loader.prototype), {
-    constructor: GLTFLoader,
-    load: function (url, onLoad, onProgress, onError) {
-      var scope = this;
-      var resourcePath;
-      if (this.resourcePath !== '') { resourcePath = this.resourcePath; }
-      else if (this.path !== '') { resourcePath = this.path; }
-      else { resourcePath = THREE.LoaderUtils.extractUrlBase(url); }
-      this.manager.itemStart(url);
-      var _onError = function (e) {
-        if (onError) { onError(e); } else { console.error(e); }
-        scope.manager.itemError(url);
-        scope.manager.itemEnd(url);
-      };
-      var loader = new THREE.FileLoader(this.manager);
-      loader.setPath(this.path);
-      loader.setResponseType('arraybuffer');
-      loader.setRequestHeader(this.requestHeader);
-      loader.setWithCredentials(this.withCredentials);
-      loader.load(url, function (data) {
-        try { scope.parse(data, resourcePath, function (gltf) { onLoad(gltf); scope.manager.itemEnd(url); }, _onError); }
-        catch (e) { _onError(e); }
-      }, onProgress, _onError);
-    },
-    setDRACOLoader: function (dracoLoader) { this.dracoLoader = dracoLoader; return this; },
-    setKTX2Loader: function (ktx2Loader) { this.ktx2Loader = ktx2Loader; return this; },
-    setMeshoptDecoder: function (meshoptDecoder) { this.meshoptDecoder = meshoptDecoder; return this; },
-    register: function (callback) { if (this.pluginCallbacks.indexOf(callback) === -1) { this.pluginCallbacks.push(callback); } return this; },
-    unregister: function (callback) { if (this.pluginCallbacks.indexOf(callback) !== -1) { this.pluginCallbacks.splice(this.pluginCallbacks.indexOf(callback), 1); } return this; },
-    parse: function (data, path, onLoad, onError) {
-      var content;
-      var extensions = {};
-      var plugins = {};
-      if (typeof data === 'string') { content = data; }
-      else {
-        var magic = THREE.LoaderUtils.decodeText(new Uint8Array(data, 0, 4));
-        if (magic === BINARY_EXTENSION_HEADER_MAGIC) {
-          try { extensions[EXTENSIONS.KHR_BINARY_GLTF] = new GLTFBinaryExtension(data); }
-          catch (error) { if (onError) onError(error); return; }
-          content = extensions[EXTENSIONS.KHR_BINARY_GLTF].content;
-        } else { content = THREE.LoaderUtils.decodeText(new Uint8Array(data)); }
-      }
-      var json;
-      try { json = JSON.parse(content); } catch (error) { if (onError) onError(error); return; }
-      if (json.asset === undefined || json.asset.version[0] < 2) { if (onError) onError(new Error('THREE.GLTFLoader: Unsupported asset.')); return; }
-      var parser = new GLTFParser(json, { path: path || this.resourcePath || '', crossOrigin: this.crossOrigin, requestHeader: this.requestHeader, manager: this.manager, ktx2Loader: this.ktx2Loader, meshoptDecoder: this.meshoptDecoder });
-      parser.fileLoader.setRequestHeader(this.requestHeader);
-      for (var i = 0; i < this.pluginCallbacks.length; i++) { var plugin = this.pluginCallbacks[i](parser); plugins[plugin.name] = plugin; if (plugin.beforeRoot) { plugin.beforeRoot(); } }
-      Object.assign(extensions, (json.extensions||{}));
-      if (extensions[EXTENSIONS.KHR_DRACO_MESH_COMPRESSION]) { parser.setExtensions({ KHR_draco_mesh_compression: this.dracoLoader }); }
-      parser.setPlugins(plugins);
-      parser.parse(onLoad, onError);
-    },
-    parseAsync: function (data, path) {
-      var scope = this;
-      return new Promise(function (resolve, reject) { scope.parse(data, path, resolve, reject); });
-    }
-  });
 
-  // Minimal stubs so the parser doesn't crash on missing extensions
-  var EXTENSIONS = { KHR_BINARY_GLTF: 'KHR_binary_glTF', KHR_DRACO_MESH_COMPRESSION: 'KHR_draco_mesh_compression', KHR_LIGHTS_PUNCTUAL: 'KHR_lights_punctual', KHR_MATERIALS_CLEARCOAT: 'KHR_materials_clearcoat', KHR_MATERIALS_IOR: 'KHR_materials_ior', KHR_MATERIALS_PBR_SPECULAR_GLOSSINESS: 'KHR_materials_pbrSpecularGlossiness', KHR_MATERIALS_SHEEN: 'KHR_materials_sheen', KHR_MATERIALS_SPECULAR: 'KHR_materials_specular', KHR_MATERIALS_TRANSMISSION: 'KHR_materials_transmission', KHR_MATERIALS_UNLIT: 'KHR_materials_unlit', KHR_MATERIALS_VOLUME: 'KHR_materials_volume', KHR_TEXTURE_BASISU: 'KHR_texture_basisu', KHR_TEXTURE_TRANSFORM: 'KHR_texture_transform', KHR_MESH_QUANTIZATION: 'KHR_mesh_quantization', EXT_TEXTURE_WEBP: 'EXT_texture_webp', EXT_MESHOPT_COMPRESSION: 'EXT_meshopt_compression' };
-  var BINARY_EXTENSION_HEADER_MAGIC = 'glTF';
-  var BINARY_EXTENSION_HEADER_LENGTH = 12;
-  var BINARY_EXTENSION_CHUNK_TYPES = { JSON: 0x4E4F534A, BIN: 0x004E4942 };
-
-  function GLTFBinaryExtension(data) {
-    this.name = EXTENSIONS.KHR_BINARY_GLTF;
-    this.content = null;
-    this.body = null;
-    var headerView = new DataView(data, 0, BINARY_EXTENSION_HEADER_LENGTH);
-    this.header = { magic: THREE.LoaderUtils.decodeText(new Uint8Array(data.slice(0, 4))), version: headerView.getUint32(4, true), length: headerView.getUint32(8, true) };
-    if (this.header.magic !== BINARY_EXTENSION_HEADER_MAGIC) { throw new Error('THREE.GLTFLoader: Unexpected magic bytes.'); }
-    if (this.header.version < 2.0) { throw new Error('THREE.GLTFLoader: Legacy binary file detected.'); }
-    var chunkContentsLength = this.header.length - BINARY_EXTENSION_HEADER_LENGTH;
-    var chunkView = new DataView(data, BINARY_EXTENSION_HEADER_LENGTH);
-    var chunkIndex = 0;
-    while (chunkIndex < chunkContentsLength) {
-      var chunkLength = chunkView.getUint32(chunkIndex, true); chunkIndex += 4;
-      var chunkType = chunkView.getUint32(chunkIndex, true); chunkIndex += 4;
-      if (chunkType === BINARY_EXTENSION_CHUNK_TYPES.JSON) { var contentArray = new Uint8Array(data, BINARY_EXTENSION_HEADER_LENGTH + chunkIndex, chunkLength); this.content = THREE.LoaderUtils.decodeText(contentArray); }
-      else if (chunkType === BINARY_EXTENSION_CHUNK_TYPES.BIN) { var byteOffset = BINARY_EXTENSION_HEADER_LENGTH + chunkIndex; this.body = data.slice(byteOffset, byteOffset + chunkLength); }
-      chunkIndex += chunkLength;
-    }
-    if (this.content === null) { throw new Error('THREE.GLTFLoader: JSON content not found.'); }
-  }
-
-  // Minimal extension stubs
-  function stub(name) { return function(p){ this.name=name; this.parser=p; }; }
-  var GLTFMaterialsClearcoatExtension = stub(EXTENSIONS.KHR_MATERIALS_CLEARCOAT);
-  var GLTFTextureBasisUExtension = stub(EXTENSIONS.KHR_TEXTURE_BASISU);
-  var GLTFTextureWebPExtension = stub(EXTENSIONS.EXT_TEXTURE_WEBP);
-  var GLTFMaterialsSheenExtension = stub(EXTENSIONS.KHR_MATERIALS_SHEEN);
-  var GLTFMaterialsTransmissionExtension = stub(EXTENSIONS.KHR_MATERIALS_TRANSMISSION);
-  var GLTFMaterialsVolumeExtension = stub(EXTENSIONS.KHR_MATERIALS_VOLUME);
-  var GLTFMaterialsIorExtension = stub(EXTENSIONS.KHR_MATERIALS_IOR);
-  var GLTFMaterialsSpecularExtension = stub(EXTENSIONS.KHR_MATERIALS_SPECULAR);
-  var GLTFLightsExtension = stub(EXTENSIONS.KHR_LIGHTS_PUNCTUAL);
-  var GLTFMeshoptCompression = stub(EXTENSIONS.EXT_MESHOPT_COMPRESSION);
-
-  // ── GLTFParser (minimal but functional for most GLBs) ──
-  function GLTFParser(json, options) {
-    this.json = json || {};
-    this.extensions = {};
-    this.plugins = {};
-    this.options = options;
-    this.cache = new GLTFRegistry();
-    this.associations = new Map();
-    this.primitiveCache = {};
-    this.meshCache = { refs: {}, uses: {} };
-    this.cameraCache = { refs: {}, uses: {} };
-    this.lightCache = { refs: {}, uses: {} };
-    this.textureCache = {};
-    this.nodeNamesUsed = {};
-    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) === true;
-    var isFirefox = navigator.userAgent.indexOf('Firefox') > -1;
-    var firefoxVersion = isFirefox ? navigator.userAgent.match(/Firefox\/([0-9]+)\./)[1] : -1;
-    if (typeof createImageBitmap === 'undefined' || isSafari || (isFirefox && firefoxVersion < 98)) { this.textureLoader = new THREE.TextureLoader(this.options.manager); }
-    else { this.textureLoader = new THREE.ImageBitmapLoader(this.options.manager); }
-    this.textureLoader.setCrossOrigin(this.options.crossOrigin);
-    this.textureLoader.setRequestHeader(this.options.requestHeader);
-    this.fileLoader = new THREE.FileLoader(this.options.manager);
-    this.fileLoader.setResponseType('arraybuffer');
-    this.fileLoader.setRequestHeader(this.options.requestHeader);
-  }
-  GLTFParser.prototype = {
-    constructor: GLTFParser,
-    setExtensions: function(e){ Object.assign(this.extensions, e); },
-    setPlugins: function(p){ this.plugins = p; },
-    parse: function(onLoad, onError) {
-      var parser = this;
-      var json = this.json;
-      this.associations = new Map();
-      // Scenes
-      Promise.all([this.getDependencies('scene'), this.getDependencies('animation'), this.getDependencies('camera')]).then(function(d){
-        var result = { scene: d[0][json.scene || 0], scenes: d[0], animations: d[1], cameras: d[2], asset: json.asset, parser: parser, userData: {} };
-        onLoad(result);
-      }).catch(onError);
-    },
-    getDependencies: function(type){
-      var parser = this;
-      var defs = this.json[type + (type==='mesh'?'es':type==='scenery'?'s':type==='animation'?'s':type==='camera'?'s':'s')] || [];
-      // map type
-      var fn = 'load' + type.charAt(0).toUpperCase() + type.slice(1);
-      return Promise.all(defs.map(function(_,i){ return parser[fn] ? parser[fn](i) : Promise.resolve(null); }));
-    },
-    getDependency: function(type, index){
-      var fn = 'load' + type.charAt(0).toUpperCase() + type.slice(1);
-      return this[fn] ? this[fn](index) : Promise.resolve(null);
-    },
-    loadScene: function(sceneIndex){
-      var json = this.json;
-      var parser = this;
-      var sceneDef = json.scenes[sceneIndex];
-      var scene = new THREE.Group();
-      scene.name = parser.createUniqueName(sceneDef.name||('Scene_'+sceneIndex));
-      return Promise.all((sceneDef.nodes||[]).map(function(nodeIndex){ return parser.loadNode(nodeIndex); })).then(function(nodes){
-        nodes.forEach(function(n){ if(n) scene.add(n); });
-        return scene;
-      });
-    },
-    loadNode: function(nodeIndex){
-      var json = this.json;
-      var parser = this;
-      var nodeDef = json.nodes[nodeIndex];
-      var pending = [];
-      if(nodeDef.mesh!==undefined){ pending.push(parser.loadMesh(nodeDef.mesh)); }
-      else { pending.push(Promise.resolve(null)); }
-      return Promise.all(pending).then(function(objs){
-        var node;
-        if(objs[0]){ node = objs[0].clone ? objs[0] : new THREE.Group(); if(objs[0] && objs[0] !== node) node.add(objs[0]); }
-        else { node = new THREE.Group(); }
-        if(nodeDef.name){ node.name = parser.createUniqueName(nodeDef.name); }
-        if(nodeDef.matrix){ var m = new THREE.Matrix4(); m.fromArray(nodeDef.matrix); node.applyMatrix4(m); }
-        else {
-          if(nodeDef.translation){ node.position.fromArray(nodeDef.translation); }
-          if(nodeDef.rotation){ node.quaternion.fromArray(nodeDef.rotation); }
-          if(nodeDef.scale){ node.scale.fromArray(nodeDef.scale); }
-        }
-        if(nodeDef.children){
-          return Promise.all(nodeDef.children.map(function(c){ return parser.loadNode(c); })).then(function(children){
-            children.forEach(function(c){ if(c) node.add(c); });
-            return node;
-          });
-        }
-        return node;
-      });
-    },
-    loadMesh: function(meshIndex){
-      var json = this.json;
-      var parser = this;
-      var meshDef = json.meshes[meshIndex];
-      var group = new THREE.Group();
-      group.name = parser.createUniqueName(meshDef.name||('Mesh_'+meshIndex));
-      return Promise.all(meshDef.primitives.map(function(primDef){
-        return parser.loadGeometry(primDef).then(function(geo){
-          return parser.loadMaterial(primDef.material).then(function(mat){
-            var mesh;
-            if(primDef.mode===1||primDef.mode===0){ mesh = new THREE.LineSegments(geo, mat||new THREE.LineBasicMaterial()); }
-            else { mesh = new THREE.Mesh(geo, mat||new THREE.MeshStandardMaterial()); }
-            return mesh;
-          });
-        });
-      })).then(function(meshes){
-        if(meshes.length===1){ return meshes[0]; }
-        meshes.forEach(function(m){ group.add(m); });
-        return group;
-      });
-    },
-    loadGeometry: function(primDef){
-      var parser = this;
-      var geo = new THREE.BufferGeometry();
-      var pending = [];
-      var attributes = primDef.attributes||{};
-      Object.keys(attributes).forEach(function(semantic){
-        pending.push(parser.loadAccessor(attributes[semantic]).then(function(accessor){
-          var name = semantic==='POSITION'?'position':semantic==='NORMAL'?'normal':semantic==='TEXCOORD_0'?'uv':semantic.toLowerCase();
-          geo.setAttribute(name, accessor);
-        }));
-      });
-      if(primDef.indices!==undefined){ pending.push(parser.loadAccessor(primDef.indices).then(function(acc){ geo.setIndex(acc); })); }
-      return Promise.all(pending).then(function(){ return geo; });
-    },
-    loadAccessor: function(accessorIndex){
-      var json = this.json;
-      var parser = this;
-      var accessorDef = json.accessors[accessorIndex];
-      var TYPE_SIZES = {SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT2:4,MAT3:9,MAT4:16};
-      var WEBGL_COMPONENT_TYPES = {5120:Int8Array,5121:Uint8Array,5122:Int16Array,5123:Uint16Array,5125:Uint32Array,5126:Float32Array};
-      return parser.loadBufferView(accessorDef.bufferView||0).then(function(bufView){
-        var TypeArr = WEBGL_COMPONENT_TYPES[accessorDef.componentType]||Float32Array;
-        var size = TYPE_SIZES[accessorDef.type]||1;
-        var byteOffset = accessorDef.byteOffset||0;
-        var count = accessorDef.count;
-        var array = new TypeArr(bufView, byteOffset, count*size);
-        var attr = new THREE.BufferAttribute(array, size);
-        return attr;
-      });
-    },
-    loadBufferView: function(bufferViewIndex){
-      var json = this.json;
-      var parser = this;
-      var bvDef = json.bufferViews[bufferViewIndex];
-      return parser.loadBuffer(bvDef.buffer).then(function(buf){
-        var byteOffset = bvDef.byteOffset||0;
-        return buf.slice(byteOffset, byteOffset+(bvDef.byteLength||0));
-      });
-    },
-    loadBuffer: function(bufferIndex){
-      var json = this.json;
-      var options = this.options;
-      var bufDef = json.buffers[bufferIndex];
-      if(bufDef.uri){
-        if(/^data:/.test(bufDef.uri)){
-          var base64 = bufDef.uri.split(',')[1];
-          var binaryStr = atob(base64);
-          var bytes = new Uint8Array(binaryStr.length);
-          for(var i=0;i<binaryStr.length;i++) bytes[i]=binaryStr.charCodeAt(i);
-          return Promise.resolve(bytes.buffer);
-        }
-        return new Promise(function(res,rej){
-          var fl = new THREE.FileLoader();
-          fl.setResponseType('arraybuffer');
-          fl.load(THREE.LoaderUtils.resolveURL(bufDef.uri, options.path), res, undefined, rej);
-        });
-      }
-      // GLB body
-      if(this.extensions[EXTENSIONS.KHR_BINARY_GLTF]){
-        return Promise.resolve(this.extensions[EXTENSIONS.KHR_BINARY_GLTF].body);
-      }
-      return Promise.reject(new Error('THREE.GLTFLoader: No buffer data.'));
-    },
-    loadMaterial: function(materialIndex){
-      if(materialIndex===undefined) return Promise.resolve(new THREE.MeshStandardMaterial());
-      var json = this.json;
-      var matDef = json.materials[materialIndex];
-      var params = {};
-      if(matDef.pbrMetallicRoughness){
-        var pbr = matDef.pbrMetallicRoughness;
-        if(pbr.baseColorFactor){ params.color = new THREE.Color().fromArray(pbr.baseColorFactor); }
-        if(pbr.metallicFactor!==undefined) params.metalness = pbr.metallicFactor;
-        if(pbr.roughnessFactor!==undefined) params.roughness = pbr.roughnessFactor;
-      }
-      if(matDef.doubleSided) params.side = THREE.DoubleSide;
-      return Promise.resolve(new THREE.MeshStandardMaterial(params));
-    },
-    loadAnimation: function(){ return Promise.resolve(null); },
-    loadCamera: function(){ return Promise.resolve(null); },
-    createUniqueName: function(name){
-      var sanitized = name ? THREE.PropertyBinding.sanitizeNodeName(name) : '';
-      if(!(sanitized in this.nodeNamesUsed)){ this.nodeNamesUsed[sanitized]=0; }
-      else { this.nodeNamesUsed[sanitized]++; sanitized += '_'+this.nodeNamesUsed[sanitized]; }
-      return sanitized;
-    }
-  };
-  // Attach EXTENSIONS ref so loadBuffer can access it
-  GLTFParser.prototype._EXTENSIONS = EXTENSIONS;
-
-  function GLTFRegistry(){ this.objects={}; }
-  GLTFRegistry.prototype = {
-    constructor: GLTFRegistry,
-    get: function(k){ return this.objects[k]; },
-    add: function(k,v){ this.objects[k]=v; },
-    remove: function(k){ delete this.objects[k]; },
-    removeAll: function(){ this.objects={}; }
-  };
-
-  return GLTFLoader;
-}());
-</script>
-
-<script>
-// ── 3D MODEL VIEWER ─────────────────────────────────────────────────────────
-(function () {
-  var canvas = document.getElementById('three-canvas');
-  var container = document.getElementById('model-container');
-  var w = container.clientWidth, h = container.clientHeight;
-
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  renderer.setSize(w, h);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.outputEncoding = THREE.sRGBEncoding;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.2;
-
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(45, w / h, 0.01, 1000);
-  camera.position.set(0, 0, 4);
-
-  // Lights
-  var ambient = new THREE.AmbientLight(0xffffff, 0.3);
-  scene.add(ambient);
-  var neonLight = new THREE.PointLight(0x00f5c4, 3, 10);
-  neonLight.position.set(2, 2, 2);
-  scene.add(neonLight);
-  var purpleLight = new THREE.PointLight(0x7b2fff, 2, 10);
-  purpleLight.position.set(-2, -1, 2);
-  scene.add(purpleLight);
-  var rimLight = new THREE.DirectionalLight(0xffffff, 0.5);
-  rimLight.position.set(0, 1, -2);
-  scene.add(rimLight);
-
-  // Orbit controls (manual)
-  var isDragging = false, prevMouse = { x: 0, y: 0 };
-  var spherical = { theta: 0, phi: Math.PI / 2 };
-  var autoRotate = true;
-  var modelGroup = new THREE.Group();
-  scene.add(modelGroup);
-
-  canvas.addEventListener('mousedown', function (e) { isDragging = true; autoRotate = false; prevMouse = { x: e.clientX, y: e.clientY }; });
-  window.addEventListener('mouseup', function () { isDragging = false; });
-  window.addEventListener('mousemove', function (e) {
-    if (!isDragging) return;
-    var dx = e.clientX - prevMouse.x, dy = e.clientY - prevMouse.y;
-    spherical.theta -= dx * 0.01;
-    spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi - dy * 0.01));
-    prevMouse = { x: e.clientX, y: e.clientY };
-  });
-  canvas.addEventListener('wheel', function (e) {
-    camera.position.z = Math.max(1, Math.min(8, camera.position.z + e.deltaY * 0.005));
-  });
-
-  // Touch support
-  canvas.addEventListener('touchstart', function(e){ if(e.touches.length===1){ isDragging=true; autoRotate=false; prevMouse={x:e.touches[0].clientX,y:e.touches[0].clientY}; } });
-  window.addEventListener('touchend', function(){ isDragging=false; });
-  window.addEventListener('touchmove', function(e){ if(!isDragging||e.touches.length!==1) return; var dx=e.touches[0].clientX-prevMouse.x,dy=e.touches[0].clientY-prevMouse.y; spherical.theta-=dx*0.01; spherical.phi=Math.max(0.1,Math.min(Math.PI-0.1,spherical.phi-dy*0.01)); prevMouse={x:e.touches[0].clientX,y:e.touches[0].clientY}; });
-
-  // Load GLB
-  var loader = new THREE.GLTFLoader();
-  loader.load(
-    'model.glb',
-    function (gltf) {
-      var model = gltf.scene;
-      // Center and scale
-      var box = new THREE.Box3().setFromObject(model);
-      var center = box.getCenter(new THREE.Vector3());
-      var size = box.getSize(new THREE.Vector3());
-      var maxDim = Math.max(size.x, size.y, size.z);
-      var scale = 2.4 / maxDim;
-      model.scale.setScalar(scale);
-      model.position.sub(center.multiplyScalar(scale));
-      // Apply neon material tint
-      model.traverse(function (child) {
-        if (child.isMesh) {
-          child.material.envMapIntensity = 1;
-          child.castShadow = true;
-        }
-      });
-      modelGroup.add(model);
-    },
-    undefined,
-    function (err) {
-      console.warn('GLB load error, showing fallback:', err);
-      // Fallback: stylized icosahedron
-      var geo = new THREE.IcosahedronGeometry(1.2, 1);
-      var mat = new THREE.MeshStandardMaterial({ color: 0x00f5c4, metalness: 0.8, roughness: 0.2, wireframe: false });
-      var mesh = new THREE.Mesh(geo, mat);
-      var wGeo = new THREE.IcosahedronGeometry(1.25, 1);
-      var wMat = new THREE.MeshBasicMaterial({ color: 0x7b2fff, wireframe: true, opacity: 0.3, transparent: true });
-      var wire = new THREE.Mesh(wGeo, wMat);
-      modelGroup.add(mesh);
-      modelGroup.add(wire);
-    }
-  );
-
-  var clock = new THREE.Clock();
-  function animate() {
-    requestAnimationFrame(animate);
-    var t = clock.getElapsedTime();
-    if (autoRotate) { spherical.theta += 0.005; }
-    // Spherical to cartesian for model rotation
-    modelGroup.rotation.y = spherical.theta;
-    modelGroup.rotation.x = spherical.phi - Math.PI / 2;
-    // Floating bob
-    modelGroup.position.y = Math.sin(t * 0.8) * 0.06;
-    // Animate lights
-    neonLight.intensity = 2.5 + Math.sin(t * 1.5) * 0.5;
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  window.addEventListener('resize', function () {
-    w = container.clientWidth; h = container.clientHeight;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-  });
-})();
 
 // ── CURSOR ──────────────────────────────────────────────────────────────────
 var cursor = document.getElementById('cursor');
@@ -1306,4 +868,8 @@ reveals.forEach(function(el, i){ el.style.transitionDelay = (i % 3) * 0.1 + 's';
 var observer = new IntersectionObserver(function (entries) {
   entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); } });
 }, { threshold: 0.1 })
-  
+reveals.forEach(function (el) { observer.observe(el); });
+setTimeout(function(){ reveals.forEach(function(el){ if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible'); }); }, 200);
+</script>
+</body>
+</html>
