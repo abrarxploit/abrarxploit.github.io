@@ -13,11 +13,11 @@ body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overfl
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,245,196,0.015) 2px,rgba(0,245,196,0.015) 4px);pointer-events:none;z-index:9990;}
 
 /* LOADER */
-#loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;transition:opacity 0.8s,visibility 0.8s;}
+#loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;transition:opacity 0.4s,visibility 0.4s;}
 #loader.gone{opacity:0;visibility:hidden;pointer-events:none;}
 .ld-text{font-family:'IBM Plex Mono',monospace;font-size:0.8rem;color:var(--neon);letter-spacing:0.2em;text-transform:uppercase;}
 .ld-bar{width:200px;height:1px;background:#1e1e2e;overflow:hidden;}
-.ld-fill{height:100%;background:var(--neon);animation:ldanim 1.5s ease-out forwards;}
+.ld-fill{height:100%;background:var(--neon);animation:ldanim 0.7s ease-out forwards;}
 @keyframes ldanim{from{width:0}to{width:100%}}
 
 /* NAV */
@@ -352,15 +352,10 @@ footer{border-top:1px solid var(--border);padding:2rem 4rem;display:flex;justify
   }
 })();
 </script><script>
-// Hide loader
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    document.getElementById('loader').classList.add('gone');
-  }, 1600);
-});
+// Hide loader immediately - no waiting for load event
 setTimeout(function() {
   document.getElementById('loader').classList.add('gone');
-}, 3000);
+}, 800);
 
 // Scroll reveal
 var els = document.querySelectorAll('.reveal');
