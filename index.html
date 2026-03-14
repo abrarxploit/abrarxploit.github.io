@@ -4,580 +4,178 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Abrar Dar — Security Researcher & AI Engineer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #050508;
-    --bg2: #0a0a10;
-    --surface: #0f0f18;
-    --border: #1e1e2e;
-    --neon: #00f5c4;
-    --neon2: #7b2fff;
-    --neon3: #ff3c6e;
-    --text: #e8e8f0;
-    --muted: #5a5a7a;
-    --accent: #00f5c4;
-    --card: #0d0d17;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root{--bg:#050508;--border:#1e1e2e;--neon:#00f5c4;--neon2:#7b2fff;--neon3:#ff3c6e;--text:#e8e8f0;--muted:#5a5a7a;--card:#0d0d17;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,245,196,0.015) 2px,rgba(0,245,196,0.015) 4px);pointer-events:none;z-index:9990;}
 
-  html { scroll-behavior: smooth; }
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;transition:opacity 0.8s,visibility 0.8s;}
+#loader.gone{opacity:0;visibility:hidden;pointer-events:none;}
+.ld-text{font-family:'IBM Plex Mono',monospace;font-size:0.8rem;color:var(--neon);letter-spacing:0.2em;text-transform:uppercase;}
+.ld-bar{width:200px;height:1px;background:#1e1e2e;overflow:hidden;}
+.ld-fill{height:100%;background:var(--neon);animation:ldanim 1.5s ease-out forwards;}
+@keyframes ldanim{from{width:0}to{width:100%}}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    overflow-x: hidden;
-    cursor: none;
-  }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 4rem;background:linear-gradient(to bottom,rgba(5,5,8,0.98),transparent);backdrop-filter:blur(8px);}
+.logo{font-family:'IBM Plex Mono',monospace;font-size:0.9rem;color:var(--neon);text-decoration:none;letter-spacing:0.08em;}
+.logo span{color:var(--muted);}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--muted);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover{color:var(--neon);}
 
-  /* CUSTOM CURSOR */
-  #cursor {
-    width: 12px; height: 12px;
-    background: var(--neon);
-    border-radius: 50%;
-    position: fixed; top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
-    mix-blend-mode: screen;
-  }
-  #cursor-ring {
-    width: 36px; height: 36px;
-    border: 1px solid var(--neon);
-    border-radius: 50%;
-    position: fixed; top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: transform 0.15s ease-out, width 0.2s, height 0.2s, opacity 0.2s;
-    opacity: 0.5;
-  }
+/* HERO */
+#hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:8rem 4rem 4rem;position:relative;overflow:hidden;}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,245,196,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,196,0.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);}
+.hero-left{position:relative;z-index:1;}
+.hero-tag{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--neon);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem;}
+.hero-tag::before{content:'';width:32px;height:1px;background:var(--neon);}
+h1{font-size:clamp(3.5rem,6vw,6rem);font-weight:800;line-height:0.95;letter-spacing:-0.03em;margin-bottom:1.5rem;}
+h1 .l1{display:block;color:var(--text);}
+h1 .l2{display:block;color:var(--neon);}
+.tagline{font-family:'IBM Plex Mono',monospace;font-size:0.85rem;color:var(--muted);line-height:1.7;max-width:440px;margin-bottom:2.5rem;border-left:2px solid var(--neon2);padding-left:1rem;}
+.ctas{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:0.8rem 1.8rem;border:1px solid;transition:all 0.25s;display:inline-block;}
+.btn-p{background:var(--neon);color:var(--bg);border-color:var(--neon);font-weight:700;}
+.btn-p:hover{background:transparent;color:var(--neon);}
+.btn-g{background:transparent;color:var(--text);border-color:var(--border);}
+.btn-g:hover{border-color:var(--neon);color:var(--neon);}
 
-  /* SCANLINE OVERLAY */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,245,196,0.015) 2px, rgba(0,245,196,0.015) 4px);
-    pointer-events: none;
-    z-index: 9990;
-  }
+/* HERO VISUAL */
+.hero-right{display:flex;justify-content:center;align-items:center;position:relative;z-index:1;}
+#visual{width:460px;height:460px;position:relative;display:flex;align-items:center;justify-content:center;}
+.hint{position:absolute;bottom:-2rem;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;white-space:nowrap;}
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.2rem 4rem;
-    background: linear-gradient(to bottom, rgba(5,5,8,0.98), transparent);
-    backdrop-filter: blur(8px);
-  }
-  .nav-logo {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.9rem;
-    color: var(--neon);
-    letter-spacing: 0.08em;
-    text-decoration: none;
-  }
-  .nav-logo span { color: var(--muted); }
-  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-  .nav-links a {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-    position: relative;
-  }
-  .nav-links a::after {
-    content: '';
-    position: absolute; bottom: -4px; left: 0;
-    width: 0; height: 1px;
-    background: var(--neon);
-    transition: width 0.3s;
-  }
-  .nav-links a:hover { color: var(--neon); }
-  .nav-links a:hover::after { width: 100%; }
+@keyframes spin{0%{transform:translate(-50%,-50%) rotateX(70deg) rotate(0deg);}100%{transform:translate(-50%,-50%) rotateX(70deg) rotate(360deg);}}
+@keyframes spin2{0%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(60deg) rotate(0deg);}100%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(60deg) rotate(360deg);}}
+@keyframes spin3{0%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(120deg) rotate(0deg);}100%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(120deg) rotate(360deg);}}
+.ring{position:absolute;border-radius:50%;border:1px solid;top:50%;left:50%;}
+.ring1{width:320px;height:320px;border-color:rgba(0,245,196,0.25);animation:spin 14s linear infinite;}
+.ring2{width:240px;height:240px;border-color:rgba(123,47,255,0.3);animation:spin2 9s linear infinite;}
+.ring3{width:400px;height:400px;border-color:rgba(255,60,110,0.15);animation:spin3 22s linear infinite;}
 
-  /* HERO */
-  #hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    padding: 8rem 4rem 4rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-grid-bg {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(0,245,196,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,245,196,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
-  }
-  .hero-left { z-index: 1; }
-  .hero-tag {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--neon);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    display: flex; align-items: center; gap: 0.75rem;
-  }
-  .hero-tag::before {
-    content: '';
-    width: 32px; height: 1px;
-    background: var(--neon);
-  }
-  h1 {
-    font-size: clamp(3.5rem, 6vw, 6rem);
-    font-weight: 800;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
-  }
-  h1 .line1 { display: block; color: var(--text); }
-  h1 .line2 { display: block; color: var(--neon); }
-  .hero-tagline {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--muted);
-    line-height: 1.7;
-    max-width: 440px;
-    margin-bottom: 2.5rem;
-    border-left: 2px solid var(--neon2);
-    padding-left: 1rem;
-  }
-  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
-  .btn {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    padding: 0.8rem 1.8rem;
-    border: 1px solid;
-    transition: all 0.25s;
-    cursor: none;
-  }
-  .btn-primary {
-    background: var(--neon);
-    color: var(--bg);
-    border-color: var(--neon);
-    font-weight: 700;
-  }
-  .btn-primary:hover { background: transparent; color: var(--neon); }
-  .btn-ghost {
-    background: transparent;
-    color: var(--text);
-    border-color: var(--border);
-  }
-  .btn-ghost:hover { border-color: var(--neon); color: var(--neon); }
+@keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+@keyframes glw{0%,100%{box-shadow:0 0 40px 8px rgba(0,245,196,0.25),0 0 80px 20px rgba(0,245,196,0.08);}50%{box-shadow:0 0 60px 18px rgba(0,245,196,0.45),0 0 120px 40px rgba(0,245,196,0.15);}}
+.core{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#1a2a2a,#050508);border:1px solid rgba(0,245,196,0.5);display:flex;align-items:center;justify-content:center;position:relative;z-index:10;animation:flt 4s ease-in-out infinite,glw 3s ease-in-out infinite;}
+.core-txt{font-family:'Space Mono',monospace;font-size:2rem;font-weight:700;color:var(--neon);text-shadow:0 0 20px var(--neon);}
 
-  /* HERO VISUAL */
-  .hero-right {
-    display: flex; justify-content: center; align-items: center;
-    position: relative; z-index: 1;
-  }
-  #model-container {
-    width: 460px; height: 460px; position: relative;
-  }
-  .model-hint {
-    position: absolute; bottom: -2rem; left: 50%;
-    transform: translateX(-50%);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem; color: var(--muted);
-    letter-spacing: 0.1em; white-space: nowrap;
-  }
-  #css3d-scene {
-    width: 100%; height: 100%;
-    position: relative; display: flex;
-    align-items: center; justify-content: center;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes spin-rev { to { transform: rotate(-360deg); } }
-  @keyframes spin3 { to { transform: rotateX(60deg) rotate(360deg); } }
-  @keyframes float { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-12px) scale(1.03);} }
-  @keyframes pulse-glow { 0%,100%{box-shadow:0 0 40px 10px rgba(0,245,196,0.3),0 0 80px 20px rgba(0,245,196,0.1);} 50%{box-shadow:0 0 60px 20px rgba(0,245,196,0.5),0 0 120px 40px rgba(0,245,196,0.2);} }
-  @keyframes orbit { from{transform:rotate(var(--start,0deg)) translateX(var(--r)) rotate(calc(-1*var(--start,0deg)));} to{transform:rotate(calc(var(--start,0deg) + 360deg)) translateX(var(--r)) rotate(calc(-1*(var(--start,0deg)+360deg)));} }
-  .orbit-ring {
-    position: absolute; border-radius: 50%; border: 1px solid;
-    top: 50%; left: 50%; transform: translate(-50%,-50%);
-  }
-  .ring1 { width: 320px; height: 320px; border-color: rgba(0,245,196,0.2); transform: translate(-50%,-50%) rotateX(70deg); animation: spin 12s linear infinite; }
-  .ring2 { width: 250px; height: 250px; border-color: rgba(123,47,255,0.25); transform: translate(-50%,-50%) rotateX(70deg) rotateZ(60deg); animation: spin-rev 9s linear infinite; }
-  .ring3 { width: 390px; height: 390px; border-color: rgba(255,60,110,0.12); transform: translate(-50%,-50%) rotateX(70deg) rotateZ(120deg); animation: spin 20s linear infinite; }
-  .core-sphere {
-    width: 130px; height: 130px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #1a2a2a, #050508);
-    border: 1px solid rgba(0,245,196,0.4);
-    display: flex; align-items: center; justify-content: center;
-    position: relative; z-index: 10;
-    animation: float 4s ease-in-out infinite, pulse-glow 3s ease-in-out infinite;
-  }
-  .sphere-inner {
-    font-family: 'Space Mono', monospace;
-    font-size: 2rem; font-weight: 700;
-    color: var(--neon); letter-spacing: -0.05em;
-    text-shadow: 0 0 20px var(--neon);
-  }
-  .particle {
-    position: absolute; width: 8px; height: 8px;
-    border-radius: 50%; top: 50%; left: 50%;
-  }
-  .p1 { background: var(--neon); box-shadow: 0 0 8px var(--neon); --r: 180px; --start: 0deg; animation: orbit 6s linear infinite; }
-  .p2 { background: var(--neon2); box-shadow: 0 0 8px var(--neon2); --r: 150px; --start: 60deg; animation: orbit 8s linear infinite reverse; }
-  .p3 { background: var(--neon3); box-shadow: 0 0 8px var(--neon3); --r: 200px; --start: 120deg; animation: orbit 10s linear infinite; }
-  .p4 { background: var(--neon); box-shadow: 0 0 6px var(--neon); --r: 170px; --start: 180deg; animation: orbit 7s linear infinite reverse; }
-  .p5 { background: var(--neon2); box-shadow: 0 0 6px var(--neon2); --r: 190px; --start: 240deg; animation: orbit 9s linear infinite; }
-  .p6 { background: var(--neon3); box-shadow: 0 0 6px var(--neon3); --r: 160px; --start: 300deg; animation: orbit 11s linear infinite reverse; }
+@keyframes orb1{0%{transform:rotate(0deg) translateX(175px) rotate(0deg);}100%{transform:rotate(360deg) translateX(175px) rotate(-360deg);}}
+@keyframes orb2{0%{transform:rotate(60deg) translateX(145px) rotate(-60deg);}100%{transform:rotate(-300deg) translateX(145px) rotate(300deg);}}
+@keyframes orb3{0%{transform:rotate(120deg) translateX(195px) rotate(-120deg);}100%{transform:rotate(480deg) translateX(195px) rotate(-480deg);}}
+@keyframes orb4{0%{transform:rotate(180deg) translateX(165px) rotate(-180deg);}100%{transform:rotate(-180deg) translateX(165px) rotate(180deg);}}
+@keyframes orb5{0%{transform:rotate(240deg) translateX(185px) rotate(-240deg);}100%{transform:rotate(600deg) translateX(185px) rotate(-600deg);}}
+@keyframes orb6{0%{transform:rotate(300deg) translateX(155px) rotate(-300deg);}100%{transform:rotate(-60deg) translateX(155px) rotate(60deg);}}
+.dot{position:absolute;width:8px;height:8px;border-radius:50%;top:50%;left:50%;margin:-4px 0 0 -4px;}
+.d1{background:var(--neon);box-shadow:0 0 8px var(--neon);animation:orb1 6s linear infinite;}
+.d2{background:var(--neon2);box-shadow:0 0 8px var(--neon2);animation:orb2 8s linear infinite;}
+.d3{background:var(--neon3);box-shadow:0 0 8px var(--neon3);animation:orb3 11s linear infinite;}
+.d4{background:var(--neon);box-shadow:0 0 6px var(--neon);animation:orb4 7s linear infinite;}
+.d5{background:var(--neon2);box-shadow:0 0 6px var(--neon2);animation:orb5 9s linear infinite;}
+.d6{background:var(--neon3);box-shadow:0 0 6px var(--neon3);animation:orb6 12s linear infinite;}
 
-  /* SECTIONS */
-  section {
-    padding: 7rem 4rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .section-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--neon);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-    display: flex; align-items: center; gap: 0.75rem;
-  }
-  .section-label::before { content: '//'; color: var(--neon2); }
-  .section-title {
-    font-size: clamp(2rem, 3.5vw, 3rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin-bottom: 3rem;
-  }
+/* SECTIONS */
+section{padding:7rem 4rem;max-width:1200px;margin:0 auto;}
+.sec-label{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--neon);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:0.75rem;}
+.sec-label::before{content:'// ';color:var(--neon2);}
+.sec-title{font-size:clamp(2rem,3.5vw,3rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:3rem;}
 
-  /* BIO SECTION */
-  #about { max-width: 1200px; }
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 5rem;
-    align-items: start;
-  }
-  .about-bio {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.92rem;
-    line-height: 1.9;
-    color: #b0b0c8;
-  }
-  .about-bio strong { color: var(--neon); font-weight: 500; }
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-  .stat {
-    background: var(--card);
-    padding: 1.5rem;
-    text-align: center;
-  }
-  .stat-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--neon);
-    display: block;
-  }
-  .stat-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-top: 0.3rem;
-  }
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:5rem;align-items:start;}
+.bio{font-family:'IBM Plex Mono',monospace;font-size:0.9rem;line-height:1.9;color:#b0b0c8;}
+.bio strong{color:var(--neon);font-weight:500;}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);}
+.stat{background:var(--card);padding:1.5rem;text-align:center;}
+.stat-n{font-family:'Space Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--neon);display:block;}
+.stat-l{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.3rem;}
 
-  /* PROJECTS */
-  #projects { max-width: 1200px; }
-  .projects-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-  .project-card {
-    background: var(--card);
-    padding: 2.5rem;
-    position: relative;
-    overflow: hidden;
-    transition: background 0.3s;
-  }
-  .project-card:hover { background: #10101e; }
-  .project-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(to right, var(--neon), transparent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s;
-  }
-  .project-card:hover::before { transform: scaleX(1); }
-  .project-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    margin-bottom: 1.25rem;
-  }
-  .project-title {
-    font-size: 1.35rem;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.01em;
-  }
-  .project-desc {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--muted);
-    line-height: 1.8;
-    margin-bottom: 1.5rem;
-  }
-  .project-tags {
-    display: flex; flex-wrap: wrap; gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .tag {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    padding: 0.3rem 0.75rem;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    letter-spacing: 0.08em;
-  }
-  .tag.neon { border-color: var(--neon); color: var(--neon); }
-  .tag.purple { border-color: var(--neon2); color: var(--neon2); }
-  .tag.red { border-color: var(--neon3); color: var(--neon3); }
-  .project-severity {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--neon3);
-    margin-bottom: 0.75rem;
-  }
-  .severity-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--neon3); animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-  .project-link {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--neon);
-    text-decoration: none;
-    letter-spacing: 0.08em;
-    display: inline-flex; align-items: center; gap: 0.4rem;
-  }
-  .project-link::after { content: '↗'; transition: transform 0.2s; }
-  .project-link:hover::after { transform: translate(2px,-2px); }
-  .project-card.full-width { grid-column: span 2; }
+/* PROJECTS */
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--border);border:1px solid var(--border);}
+.proj{background:var(--card);padding:2.5rem;position:relative;overflow:hidden;transition:background 0.3s;}
+.proj:hover{background:#10101e;}
+.proj::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--neon),transparent);transform:scaleX(0);transform-origin:left;transition:transform 0.4s;}
+.proj:hover::before{transform:scaleX(1);}
+.proj-num{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.15em;margin-bottom:1rem;}
+.proj-title{font-size:1.3rem;font-weight:700;margin-bottom:0.75rem;}
+.proj-desc{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--muted);line-height:1.8;margin-bottom:1.5rem;}
+.tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;padding:0.3rem 0.75rem;border:1px solid var(--border);color:var(--muted);}
+.tag.g{border-color:var(--neon);color:var(--neon);}
+.tag.p{border-color:var(--neon2);color:var(--neon2);}
+.tag.r{border-color:var(--neon3);color:var(--neon3);}
+.sev{display:inline-flex;align-items:center;gap:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--neon3);margin-bottom:0.75rem;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.dot-r{width:6px;height:6px;border-radius:50%;background:var(--neon3);display:inline-block;animation:pulse 1.5s infinite;}
+.proj-link{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--neon);text-decoration:none;}
+.proj-link:hover{text-decoration:underline;}
 
-  /* SKILLS */
-  #skills { max-width: 1200px; }
-  .skills-layout { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5px; background: var(--border); border: 1px solid var(--border); }
-  .skill-group { background: var(--card); padding: 2rem; }
-  .skill-group-title {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--neon);
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .skill-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-  .skill-list li {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.78rem;
-    color: #9090b0;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .skill-list li::before { content: '>'; color: var(--neon2); font-size: 0.7rem; }
+/* SKILLS */
+.skills-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border);border:1px solid var(--border);}
+.sg{background:var(--card);padding:2rem;}
+.sg-title{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--neon);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+.sg ul{list-style:none;display:flex;flex-direction:column;gap:0.6rem;}
+.sg ul li{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:#9090b0;display:flex;align-items:center;gap:0.5rem;}
+.sg ul li::before{content:'>';color:var(--neon2);font-size:0.7rem;}
 
-  /* EDUCATION */
-  #education { max-width: 1200px; }
-  .timeline { position: relative; padding-left: 2rem; }
-  .timeline::before {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, var(--neon), var(--neon2), transparent);
-  }
-  .timeline-item {
-    position: relative;
-    padding: 2rem 2rem 2.5rem;
-    background: var(--card);
-    border: 1px solid var(--border);
-    margin-bottom: 1.5rem;
-    transition: border-color 0.3s;
-  }
-  .timeline-item:hover { border-color: var(--neon); }
-  .timeline-item::before {
-    content: '';
-    position: absolute; left: -2.5rem; top: 2rem;
-    width: 10px; height: 10px;
-    background: var(--neon);
-    border-radius: 50%;
-    box-shadow: 0 0 12px var(--neon);
-  }
-  .edu-period {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--neon2);
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-  }
-  .edu-degree {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 0.3rem;
-  }
-  .edu-school {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-bottom: 0.75rem;
-  }
-  .edu-note {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    color: #6868a0;
-    line-height: 1.7;
-  }
+/* EDUCATION */
+.timeline{position:relative;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--neon),var(--neon2),transparent);}
+.titem{position:relative;padding:2rem 2rem 2.5rem;background:var(--card);border:1px solid var(--border);margin-bottom:1.5rem;transition:border-color 0.3s;}
+.titem:hover{border-color:var(--neon);}
+.titem::before{content:'';position:absolute;left:-2.5rem;top:2rem;width:10px;height:10px;background:var(--neon);border-radius:50%;box-shadow:0 0 12px var(--neon);}
+.t-period{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--neon2);letter-spacing:0.1em;margin-bottom:0.5rem;}
+.t-deg{font-size:1.1rem;font-weight:700;margin-bottom:0.3rem;}
+.t-school{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;}
+.t-note{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:#6868a0;line-height:1.7;}
+.certs{display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:2rem;}
+.cert{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.6rem 1.2rem;border:1px solid var(--border);color:var(--muted);letter-spacing:0.06em;transition:all 0.2s;}
+.cert:hover{border-color:var(--neon);color:var(--neon);}
 
-  /* CERTIFICATIONS */
-  .certs-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
-  .cert-chip {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    padding: 0.6rem 1.2rem;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    letter-spacing: 0.06em;
-    transition: all 0.2s;
-  }
-  .cert-chip:hover { border-color: var(--neon); color: var(--neon); background: rgba(0,245,196,0.04); }
+/* CONTACT */
+#contact{text-align:center;}
+.contact-intro{font-family:'IBM Plex Mono',monospace;font-size:0.85rem;color:var(--muted);margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.8;}
+.email-link{font-size:clamp(1rem,2vw,1.5rem);font-family:'IBM Plex Mono',monospace;color:var(--text);text-decoration:none;border-bottom:1px solid var(--neon);padding-bottom:0.3rem;transition:color 0.2s;word-break:break-all;}
+.email-link:hover{color:var(--neon);}
+.socials{display:flex;justify-content:center;gap:1rem;margin-top:3rem;flex-wrap:wrap;}
+.social{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--muted);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.4rem;border:1px solid var(--border);transition:all 0.25s;}
+.social:hover{color:var(--neon);border-color:var(--neon);}
 
-  /* CONTACT */
-  #contact { max-width: 1200px; text-align: center; }
-  .contact-email {
-    font-size: clamp(1.2rem, 2.5vw, 2rem);
-    font-family: 'IBM Plex Mono', monospace;
-    color: var(--text);
-    text-decoration: none;
-    border-bottom: 1px solid var(--neon);
-    padding-bottom: 0.3rem;
-    transition: color 0.2s;
-  }
-  .contact-email:hover { color: var(--neon); }
-  .socials { display: flex; justify-content: center; gap: 1.5rem; margin-top: 3rem; flex-wrap: wrap; }
-  .social-link {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.7rem 1.4rem;
-    border: 1px solid var(--border);
-    transition: all 0.25s;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .social-link:hover { color: var(--neon); border-color: var(--neon); background: rgba(0,245,196,0.04); }
+footer{border-top:1px solid var(--border);padding:2rem 4rem;display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted);}
 
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2rem 4rem;
-    display: flex; justify-content: space-between; align-items: center;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-  }
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s,transform 0.6s;}
+.reveal.on{opacity:1;transform:none;}
 
-  /* LOADING SCREEN */
-  #loader {
-    position: fixed; inset: 0;
-    background: var(--bg);
-    z-index: 9997;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 1.5rem;
-    transition: opacity 0.6s, visibility 0.6s;
-  }
-  #loader.hidden { opacity: 0; visibility: hidden; }
-  .loader-text {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--neon);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-  .loader-bar {
-    width: 200px; height: 1px;
-    background: var(--border);
-    position: relative; overflow: hidden;
-  }
-  .loader-fill {
-    position: absolute; top: 0; left: 0; height: 100%;
-    background: var(--neon);
-    animation: load 1.8s ease-out forwards;
-  }
-  @keyframes load { from { width: 0; } to { width: 100%; } }
-
-  /* ANIMATE IN */
-  .reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .reveal.visible { opacity: 1; transform: none; }
-
-  @media (max-width: 900px) {
-    nav { padding: 1rem 1.5rem; }
-    #hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 3rem; }
-    .hero-right { order: -1; }
-    #model-container { width: 280px; height: 280px; }
-    section { padding: 4rem 1.5rem; }
-    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .project-card.full-width { grid-column: span 1; }
-    .skills-layout { grid-template-columns: 1fr; }
-    footer { flex-direction: column; gap: 0.75rem; text-align: center; }
-    .nav-links { display: none; }
-  }
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem;}
+  .nav-links{display:none;}
+  #hero{grid-template-columns:1fr;padding:7rem 1.5rem 3rem;gap:3rem;}
+  .hero-right{order:-1;}
+  #visual{width:280px;height:280px;}
+  .ring1{width:195px;height:195px;}
+  .ring2{width:150px;height:150px;}
+  .ring3{width:250px;height:250px;}
+  .d1,.d2,.d3,.d4,.d5,.d6{--r:100px;}
+  section{padding:4rem 1.5rem;}
+  .about-grid{grid-template-columns:1fr;gap:2.5rem;}
+  .proj-grid{grid-template-columns:1fr;}
+  .skills-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:0.75rem;text-align:center;padding:2rem 1.5rem;}
+}
 </style>
 </head>
 <body>
 
 <div id="loader">
-  <div class="loader-text">Initializing // abrar.dar</div>
-  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <div class="ld-text">Initializing // abrar.dar</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
 </div>
 
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-
 <nav>
-  <a href="#" class="nav-logo">AD<span>.sh</span></a>
+  <a href="#" class="logo">AD<span>.sh</span></a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#projects">Research</a></li>
@@ -587,259 +185,153 @@
   </ul>
 </nav>
 
-<!-- HERO -->
 <div id="hero">
-  <div class="hero-grid-bg"></div>
+  <div class="grid-bg"></div>
   <div class="hero-left reveal">
-    <div class="hero-tag">Security Researcher & AI Engineer</div>
-    <h1>
-      <span class="line1">Abrar</span>
-      <span class="line2">Dar</span>
-    </h1>
-    <p class="hero-tagline">Bridging the Gap Between Intelligent Systems and Offensive Security.</p>
-    <div class="hero-ctas">
-      <a href="#projects" class="btn btn-primary">View Research</a>
-      <a href="#contact" class="btn btn-ghost">Get In Touch</a>
+    <div class="hero-tag">Security Researcher &amp; AI Engineer</div>
+    <h1><span class="l1">Abrar</span><span class="l2">Dar</span></h1>
+    <p class="tagline">Bridging the Gap Between Intelligent Systems and Offensive Security.</p>
+    <div class="ctas">
+      <a href="#projects" class="btn btn-p">View Research</a>
+      <a href="#contact" class="btn btn-g">Get In Touch</a>
     </div>
   </div>
   <div class="hero-right reveal">
-    <div id="model-container">
-      <canvas id="three-canvas"></canvas>
-      <div class="model-hint">drag to rotate · scroll to zoom</div>
+    <div id="visual">
+      <div class="ring ring1"></div>
+      <div class="ring ring2"></div>
+      <div class="ring ring3"></div>
+      <div class="core"><span class="core-txt">AD</span></div>
+      <div class="dot d1"></div>
+      <div class="dot d2"></div>
+      <div class="dot d3"></div>
+      <div class="dot d4"></div>
+      <div class="dot d5"></div>
+      <div class="dot d6"></div>
+      <div class="hint">security researcher · ai engineer</div>
     </div>
   </div>
 </div>
 
-<!-- ABOUT -->
 <section id="about">
-  <div class="section-label">Profile</div>
-  <h2 class="section-title">About Me</h2>
+  <div class="sec-label">Profile</div>
+  <h2 class="sec-title">About Me</h2>
   <div class="about-grid reveal">
     <div>
-      <p class="about-bio">
-        3rd-year <strong>B.Tech AIML student</strong> and independent security researcher.
-        I specialize in identifying critical vulnerabilities and building <strong>privacy-first AI tools</strong>.
-        <br/><br/>
-        From triaging <strong>RCE bugs in GitHub Actions</strong> to engineering AI-powered CLI security tools,
-        I focus on turning complex vulnerabilities into robust technical solutions. My work spans
-        the intersection of <strong>machine learning systems</strong> and <strong>offensive security research</strong>.
-        <br/><br/>
-        Based in <strong>Mohali, India</strong> — open to remote collaboration, bug bounty programs,
-        and research partnerships.
-      </p>
+      <p class="bio">3rd-year <strong>B.Tech AIML student</strong> and independent security researcher. I specialize in identifying critical vulnerabilities and building <strong>privacy-first AI tools</strong>.<br/><br/>From triaging <strong>RCE bugs in GitHub Actions</strong> to engineering AI-powered CLI security tools, I focus on turning complex vulnerabilities into robust technical solutions. My work spans the intersection of <strong>machine learning systems</strong> and <strong>offensive security research</strong>.<br/><br/>Based in <strong>Mohali, India</strong> — open to remote collaboration, bug bounty programs, and research partnerships.</p>
     </div>
-    <div class="stats-grid">
-      <div class="stat">
-        <span class="stat-num">4+</span>
-        <span class="stat-label">Projects Built</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">2</span>
-        <span class="stat-label">CVEs Reported</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">90%+</span>
-        <span class="stat-label">ML Accuracy</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">7.0</span>
-        <span class="stat-label">CVSS Score</span>
-      </div>
+    <div class="stats">
+      <div class="stat"><span class="stat-n">4+</span><span class="stat-l">Projects Built</span></div>
+      <div class="stat"><span class="stat-n">2</span><span class="stat-l">CVEs Reported</span></div>
+      <div class="stat"><span class="stat-n">90%+</span><span class="stat-l">ML Accuracy</span></div>
+      <div class="stat"><span class="stat-n">7.0</span><span class="stat-l">CVSS Score</span></div>
     </div>
   </div>
 </section>
 
-<!-- PROJECTS -->
-<section id="projects" style="padding-top:0;">
-  <div class="section-label">Research & Engineering</div>
-  <h2 class="section-title">Featured Work</h2>
-  <div class="projects-grid reveal">
-
-    <div class="project-card">
-      <div class="project-num">01 // SECURITY RESEARCH</div>
-      <div class="project-severity"><span class="severity-dot"></span> HIGH — CVSS 7.0–8.9</div>
-      <h3 class="project-title">Odoo 18.0 Vulnerability</h3>
-      <p class="project-desc">Discovered unauthorized access to the <code>res.users</code> model in Odoo Community Edition 18.0, exposing credential data. Demonstrated deep ORM exploitation and API-based enumeration techniques. Reported via Intigriti responsible disclosure.</p>
-      <div class="project-tags">
-        <span class="tag red">Intigriti</span>
-        <span class="tag">ORM Exploitation</span>
-        <span class="tag">API Enumeration</span>
-        <span class="tag">Auth Bypass</span>
-      </div>
-      <a href="https://github.com/abrarxploit" class="project-link" target="_blank">Read Report</a>
+<section id="projects" style="padding-top:0">
+  <div class="sec-label">Research &amp; Engineering</div>
+  <h2 class="sec-title">Featured Work</h2>
+  <div class="proj-grid reveal">
+    <div class="proj">
+      <div class="proj-num">01 // SECURITY RESEARCH</div>
+      <div class="sev"><span class="dot-r"></span> HIGH — CVSS 7.0–8.9</div>
+      <h3 class="proj-title">Odoo 18.0 Vulnerability</h3>
+      <p class="proj-desc">Discovered unauthorized access to the res.users model in Odoo CE 18.0, exposing credential data. Deep ORM exploitation and API-based enumeration. Reported via Intigriti responsible disclosure.</p>
+      <div class="tags"><span class="tag r">Intigriti</span><span class="tag">ORM Exploitation</span><span class="tag">API Enumeration</span><span class="tag">Auth Bypass</span></div>
+      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">Read Report ↗</a>
     </div>
-
-    <div class="project-card">
-      <div class="project-num">02 // AI + SECURITY</div>
-      <h3 class="project-title">InboxZero CLI</h3>
-      <p class="project-desc">AI-powered Gmail cleanup tool using fine-tuned DistilBERT. Processes emails 100% on-device for maximum privacy, auto-deletes spam with 90%+ confidence using SHA-3 hardware hashing. Built with HuggingFace and Google OAuth 2.0.</p>
-      <div class="project-tags">
-        <span class="tag neon">Python 3.10+</span>
-        <span class="tag neon">DistilBERT</span>
-        <span class="tag">HuggingFace</span>
-        <span class="tag">OAuth 2.0</span>
-        <span class="tag">SHA-3</span>
-      </div>
-      <a href="https://github.com/abrarxploit" class="project-link" target="_blank">GitHub Repository</a>
+    <div class="proj">
+      <div class="proj-num">02 // AI + SECURITY</div>
+      <h3 class="proj-title">InboxZero CLI</h3>
+      <p class="proj-desc">AI-powered Gmail cleanup tool using fine-tuned DistilBERT. Processes emails 100% on-device for maximum privacy. Auto-deletes spam with 90%+ confidence using SHA-3 hardware hashing.</p>
+      <div class="tags"><span class="tag g">Python 3.10+</span><span class="tag g">DistilBERT</span><span class="tag">HuggingFace</span><span class="tag">OAuth 2.0</span></div>
+      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">GitHub Repository ↗</a>
     </div>
-
-    <div class="project-card">
-      <div class="project-num">03 // CRYPTOGRAPHY</div>
-      <h3 class="project-title">Cryptomancer</h3>
-      <p class="project-desc">Modern desktop encryption suite supporting AES, DES, and RSA. Features secure key pair generation (.pem files), real-time action logging, and a clean GUI built with ttkbootstrap. Fully unit tested.</p>
-      <div class="project-tags">
-        <span class="tag purple">Python</span>
-        <span class="tag purple">AES / DES / RSA</span>
-        <span class="tag">ttkbootstrap</span>
-        <span class="tag">Unit Testing</span>
-      </div>
-      <a href="https://github.com/abrarxploit" class="project-link" target="_blank">GitHub Repository</a>
+    <div class="proj">
+      <div class="proj-num">03 // CRYPTOGRAPHY</div>
+      <h3 class="proj-title">Cryptomancer</h3>
+      <p class="proj-desc">Modern desktop encryption suite supporting AES, DES, and RSA. Secure key pair generation (.pem), real-time action logging, clean GUI built with ttkbootstrap. Fully unit tested.</p>
+      <div class="tags"><span class="tag p">Python</span><span class="tag p">AES / DES / RSA</span><span class="tag">ttkbootstrap</span><span class="tag">Unit Testing</span></div>
+      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">GitHub Repository ↗</a>
     </div>
-
-    <div class="project-card">
-      <div class="project-num">04 // CVE RESEARCH</div>
-      <div class="project-severity"><span class="severity-dot"></span> RCE — CWE-20/94</div>
-      <h3 class="project-title">GitHub Actions RCE</h3>
-      <p class="project-desc">Identified Command Injection vulnerability (CWE-20/94) in <code>anchore/grype</code> GitHub Action. Documented a valid technical path for arbitrary command execution on GitHub-hosted runners via unsafe input validation in CI/CD pipelines. Reported via HackerOne.</p>
-      <div class="project-tags">
-        <span class="tag red">HackerOne</span>
-        <span class="tag red">RCE</span>
-        <span class="tag">CI/CD Security</span>
-        <span class="tag">CWE-20</span>
-      </div>
-      <a href="https://github.com/abrarxploit" class="project-link" target="_blank">Research Documentation</a>
+    <div class="proj">
+      <div class="proj-num">04 // CVE RESEARCH</div>
+      <div class="sev"><span class="dot-r"></span> RCE — CWE-20/94</div>
+      <h3 class="proj-title">GitHub Actions RCE</h3>
+      <p class="proj-desc">Command Injection in anchore/grype GitHub Action. Arbitrary command execution on GitHub-hosted runners via unsafe input validation in CI/CD pipelines. Reported via HackerOne.</p>
+      <div class="tags"><span class="tag r">HackerOne</span><span class="tag r">RCE</span><span class="tag">CI/CD Security</span><span class="tag">CWE-20</span></div>
+      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">Research Documentation ↗</a>
     </div>
-
   </div>
 </section>
 
-<!-- SKILLS -->
 <section id="skills">
-  <div class="section-label">Technical Stack</div>
-  <h2 class="section-title">Skills & Tools</h2>
-  <div class="skills-layout reveal">
-    <div class="skill-group">
-      <div class="skill-group-title">Languages</div>
-      <ul class="skill-list">
-        <li>Python (Primary)</li>
-        <li>Java (Basics)</li>
-        <li>C (Basics)</li>
-        <li>HTML / CSS</li>
-      </ul>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Cybersecurity</div>
-      <ul class="skill-list">
-        <li>Bug Bounty Hunting</li>
-        <li>Web App Penetration Testing</li>
-        <li>Vulnerability Assessment</li>
-        <li>Responsible Disclosure</li>
-        <li>API Security Testing</li>
-        <li>OWASP Top 10</li>
-        <li>Kali Linux / Metasploit</li>
-        <li>Nmap / SQLMap / Wireshark</li>
-      </ul>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">AI / ML</div>
-      <ul class="skill-list">
-        <li>HuggingFace Transformers</li>
-        <li>DistilBERT / BERT</li>
-        <li>Google OAuth 2.0</li>
-        <li>Gmail API</li>
-        <li>MongoDB (Basics)</li>
-        <li>Google Cloud (Basics)</li>
-      </ul>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Tools & Platforms</div>
-      <ul class="skill-list">
-        <li>Git / GitHub</li>
-        <li>Linux (Kali, Ubuntu)</li>
-        <li>VS Code / Postman</li>
-        <li>Cloudflare Tunnel</li>
-        <li>ttkbootstrap</li>
-      </ul>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Platforms</div>
-      <ul class="skill-list">
-        <li>Intigriti</li>
-        <li>HackerOne</li>
-        <li>HackerRank</li>
-        <li>GitHub Actions</li>
-      </ul>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Soft Skills</div>
-      <ul class="skill-list">
-        <li>Technical Writing</li>
-        <li>Problem Solving</li>
-        <li>Leadership</li>
-        <li>Teamwork</li>
-        <li>Adaptability</li>
-        <li>Time Management</li>
-      </ul>
-    </div>
+  <div class="sec-label">Technical Stack</div>
+  <h2 class="sec-title">Skills &amp; Tools</h2>
+  <div class="skills-grid reveal">
+    <div class="sg"><div class="sg-title">Languages</div><ul><li>Python (Primary)</li><li>Java (Basics)</li><li>C (Basics)</li><li>HTML / CSS</li></ul></div>
+    <div class="sg"><div class="sg-title">Cybersecurity</div><ul><li>Bug Bounty Hunting</li><li>Web App Pen Testing</li><li>Vulnerability Assessment</li><li>Responsible Disclosure</li><li>API Security Testing</li><li>OWASP Top 10</li><li>Kali Linux / Metasploit</li><li>Nmap / SQLMap / Wireshark</li></ul></div>
+    <div class="sg"><div class="sg-title">AI / ML</div><ul><li>HuggingFace Transformers</li><li>DistilBERT / BERT</li><li>Google OAuth 2.0</li><li>Gmail API</li><li>MongoDB (Basics)</li><li>Google Cloud (Basics)</li></ul></div>
+    <div class="sg"><div class="sg-title">Tools</div><ul><li>Git / GitHub</li><li>Linux (Kali, Ubuntu)</li><li>VS Code / Postman</li><li>Cloudflare Tunnel</li></ul></div>
+    <div class="sg"><div class="sg-title">Platforms</div><ul><li>Intigriti</li><li>HackerOne</li><li>HackerRank</li><li>GitHub Actions</li></ul></div>
+    <div class="sg"><div class="sg-title">Soft Skills</div><ul><li>Technical Writing</li><li>Problem Solving</li><li>Leadership</li><li>Teamwork</li><li>Time Management</li></ul></div>
   </div>
 </section>
 
-<!-- EDUCATION -->
 <section id="education">
-  <div class="section-label">Academic Journey</div>
-  <h2 class="section-title">Education & Certifications</h2>
+  <div class="sec-label">Academic Journey</div>
+  <h2 class="sec-title">Education &amp; Certifications</h2>
   <div class="timeline reveal">
-    <div class="timeline-item">
-      <div class="edu-period">2024 — 2027 · Ongoing</div>
-      <div class="edu-degree">B.Tech — Artificial Intelligence & Machine Learning</div>
-      <div class="edu-school">Chandigarh Engineering College (CGC), Jhanjeri, Mohali</div>
-      <div class="edu-note">Focus: Neural Networks, Deep Learning, and AI-driven Security Protocols.</div>
+    <div class="titem">
+      <div class="t-period">2024 — 2027 · Ongoing</div>
+      <div class="t-deg">B.Tech — Artificial Intelligence &amp; Machine Learning</div>
+      <div class="t-school">Chandigarh Engineering College (CGC), Jhanjeri, Mohali</div>
+      <div class="t-note">Focus: Neural Networks, Deep Learning, and AI-driven Security Protocols.</div>
     </div>
-    <div class="timeline-item">
-      <div class="edu-period">2021 — 2024 · Completed</div>
-      <div class="edu-degree">Diploma in Civil Engineering · CGPA 6.8</div>
-      <div class="edu-school">Kashmir Government Polytechnic (KGP), Srinagar</div>
-      <div class="edu-note">Foundational logic and mathematical modeling for complex systems.</div>
+    <div class="titem">
+      <div class="t-period">2021 — 2024 · Completed</div>
+      <div class="t-deg">Diploma in Civil Engineering · CGPA 6.8</div>
+      <div class="t-school">Kashmir Government Polytechnic (KGP), Srinagar</div>
+      <div class="t-note">Foundational logic and mathematical modeling for complex systems.</div>
     </div>
-    <div class="timeline-item">
-      <div class="edu-period">2020 · Completed</div>
-      <div class="edu-degree">Secondary School (10th) · 94.6%</div>
-      <div class="edu-school">Fayaz Educational Institute, Srinagar</div>
-      <div class="edu-note">Distinction in Core Sciences.</div>
+    <div class="titem">
+      <div class="t-period">2020 · Completed</div>
+      <div class="t-deg">Secondary School (10th) · 94.6%</div>
+      <div class="t-school">Fayaz Educational Institute, Srinagar</div>
+      <div class="t-note">Distinction in Core Sciences.</div>
     </div>
-    <div class="timeline-item">
-      <div class="edu-period">05/2025 — 07/2025 · Internship</div>
-      <div class="edu-degree">Summer Training — CompTIA Security+</div>
-      <div class="edu-school">Professional Certification Program, Mohali</div>
-      <div class="edu-note">Specialized in threat analysis, penetration testing methodologies, ethical hacking, and network security under expert supervision.</div>
+    <div class="titem">
+      <div class="t-period">05/2025 — 07/2025 · Internship</div>
+      <div class="t-deg">Summer Training — CompTIA Security+</div>
+      <div class="t-school">Professional Certification Program, Mohali</div>
+      <div class="t-note">Threat analysis, penetration testing, ethical hacking, and network security.</div>
     </div>
   </div>
-
-  <div style="margin-top:3rem;">
-    <div class="section-label" style="margin-bottom:0.5rem;">Certifications</div>
-    <div class="certs-grid reveal">
-      <div class="cert-chip">CompTIA Security+</div>
-      <div class="cert-chip">Vue.js Certificate</div>
-      <div class="cert-chip">HTML & CSS Certificate</div>
-      <div class="cert-chip">HackerRank Certification</div>
-      <div class="cert-chip">Introduction to Cybersecurity</div>
-      <div class="cert-chip">Course Completion Certificate</div>
+  <div style="margin-top:3rem" class="reveal">
+    <div class="sec-label">Certifications</div>
+    <div class="certs">
+      <div class="cert">CompTIA Security+</div>
+      <div class="cert">Vue.js Certificate</div>
+      <div class="cert">HTML &amp; CSS Certificate</div>
+      <div class="cert">HackerRank Certification</div>
+      <div class="cert">Introduction to Cybersecurity</div>
+      <div class="cert">Course Completion Certificate</div>
     </div>
   </div>
 </section>
 
-<!-- CONTACT -->
 <section id="contact">
-  <div class="section-label">Get In Touch</div>
-  <h2 class="section-title" style="margin-bottom:1.5rem;">Let's Work Together</h2>
-  <p style="font-family:'IBM Plex Mono',monospace;font-size:0.85rem;color:var(--muted);margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.8;">Open to security research collaborations, bug bounty partnerships, AI/ML projects, and freelance opportunities.</p>
-  <a href="/cdn-cgi/l/email-protection#2e4f4c5c4f5c4a4f5c001e1e1e1e1d1e161b1d16176e49434f4742004d4143" class="contact-email"><span class="__cf_email__" data-cfemail="caaba8b8abb8aeabb8e4fafafafaf9faf2fff9f2f38aada7aba3a6e4a9a5a7">[email&#160;protected]</span></a>
+  <div class="sec-label">Get In Touch</div>
+  <h2 class="sec-title" style="margin-bottom:1.5rem">Let's Work Together</h2>
+  <p class="contact-intro">Open to security research collaborations, bug bounty partnerships, AI/ML projects, and freelance opportunities.</p>
+  <a href="#" class="email-link" id="eml">Loading...</a>
   <div class="socials">
-    <a href="https://github.com/abrarxploit" target="_blank" class="social-link">⌥ GitHub</a>
-    <a href="https://linkedin.com/in/abrardar" target="_blank" class="social-link">⌥ LinkedIn</a>
-    <a href="https://x.com/Abrar52406739" target="_blank" class="social-link">⌥ X / Twitter</a>
-    <a href="https://www.instagram.com/abrardar02" target="_blank" class="social-link">⌥ Instagram</a>
-    <a href="https://www.facebook.com/share/1KfaUJQX95/" target="_blank" class="social-link">⌥ Facebook</a>
+    <a href="https://github.com/abrarxploit" target="_blank" class="social">GitHub</a>
+    <a href="https://linkedin.com/in/abrardar" target="_blank" class="social">LinkedIn</a>
+    <a href="https://x.com/Abrar52406739" target="_blank" class="social">X / Twitter</a>
+    <a href="https://www.instagram.com/abrardar02" target="_blank" class="social">Instagram</a>
+    <a href="https://www.facebook.com/share/1KfaUJQX95/" target="_blank" class="social">Facebook</a>
   </div>
 </section>
 
@@ -848,27 +340,30 @@
   <span>abrarxploit · Security Researcher · AIML Engineer</span>
 </footer>
 
-<script>
-// ── CURSOR ──────────────────────────────────────────────────────────────────
-var cursor = document.getElementById('cursor');
-var ring = document.getElementById('cursor-ring');
-var mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', function (e) { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
-(function lerp() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(lerp); })();
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+// Build email via JS to bypass Cloudflare obfuscation
+(function() {
+  var u = 'abrardar.00003085389';
+  var d = 'gmail.com';
+  var el = document.getElementById('eml');
+  if (el) {
+    el.href = 'mailto:' + u + '@' + d;
+    el.textContent = u + '@' + d;
+  }
+})();
+</script><script>
+// Hide loader
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    document.getElementById('loader').classList.add('gone');
+  }, 1600);
+});
+setTimeout(function() {
+  document.getElementById('loader').classList.add('gone');
+}, 3000);
 
-// ── LOADER HIDE — always dismisses after 2.5s no matter what ────────────────
-function hideLoader() { var l=document.getElementById('loader'); if(l) l.classList.add('hidden'); }
-setTimeout(hideLoader, 2500);
-window.addEventListener('load', function() { setTimeout(hideLoader, 600); });
-
-// ── REVEAL ON SCROLL ─────────────────────────────────────────────────────────
-var reveals = document.querySelectorAll('.reveal');
-reveals.forEach(function(el, i){ el.style.transitionDelay = (i % 3) * 0.1 + 's'; });
-var observer = new IntersectionObserver(function (entries) {
-  entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-}, { threshold: 0.1 })
-reveals.forEach(function (el) { observer.observe(el); });
-setTimeout(function(){ reveals.forEach(function(el){ if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible'); }); }, 200);
-</script>
-</body>
-</html>
+// Scroll reveal
+var els = document.querySelectorAll('.reveal');
+var io = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) e.target.classList.add
