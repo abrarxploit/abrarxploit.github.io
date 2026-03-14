@@ -6,76 +6,120 @@
 <title>Abrar Dar — Security Researcher & AI Engineer</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#050508;--border:#1e1e2e;--neon:#00f5c4;--neon2:#7b2fff;--neon3:#ff3c6e;--text:#e8e8f0;--muted:#5a5a7a;--card:#0d0d17;}
+:root{
+  --bg:#050508;
+  --border:#1e1e2e;
+  --neon:#00f5c4;
+  --neon2:#7b2fff;
+  --neon3:#ff3c6e;
+  --text:#e8e8f0;
+  --muted:#5a5a7a;
+  --card:#0d0d17;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,245,196,0.015) 2px,rgba(0,245,196,0.015) 4px);pointer-events:none;z-index:9990;}
 
-/* LOADER */
-@keyframes ldanim{from{width:0}to{width:100%}}
-@keyframes loaderHide{0%,80%{opacity:1;visibility:visible;}100%{opacity:0;visibility:hidden;}}
-#loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;animation:loaderHide 1.8s ease forwards;pointer-events:none;}
-.ld-text{font-family:'IBM Plex Mono',monospace;font-size:0.8rem;color:var(--neon);letter-spacing:0.2em;text-transform:uppercase;}
-.ld-bar{width:200px;height:1px;background:#1e1e2e;overflow:hidden;}
-.ld-fill{height:100%;background:var(--neon);animation:ldanim 0.7s ease-out forwards;}
+/* SCANLINES */
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,245,196,0.012) 2px,rgba(0,245,196,0.012) 4px);pointer-events:none;z-index:9990;}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 4rem;background:linear-gradient(to bottom,rgba(5,5,8,0.98),transparent);backdrop-filter:blur(8px);}
 .logo{font-family:'IBM Plex Mono',monospace;font-size:0.9rem;color:var(--neon);text-decoration:none;letter-spacing:0.08em;}
 .logo span{color:var(--muted);}
 .nav-links{display:flex;gap:2.5rem;list-style:none;}
-.nav-links a{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--muted);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--muted);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--neon);transition:width 0.3s;}
 .nav-links a:hover{color:var(--neon);}
+.nav-links a:hover::after{width:100%;}
 
 /* HERO */
 #hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:8rem 4rem 4rem;position:relative;overflow:hidden;}
-.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,245,196,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,196,0.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);}
+
+/* ANIMATED GRID BG */
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,245,196,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,196,0.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);animation:gridpulse 6s ease-in-out infinite;}
+@keyframes gridpulse{0%,100%{opacity:0.7;}50%{opacity:1.3;}}
+
 .hero-left{position:relative;z-index:1;}
 .hero-tag{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--neon);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem;}
 .hero-tag::before{content:'';width:32px;height:1px;background:var(--neon);}
 h1{font-size:clamp(3.5rem,6vw,6rem);font-weight:800;line-height:0.95;letter-spacing:-0.03em;margin-bottom:1.5rem;}
 h1 .l1{display:block;color:var(--text);}
-h1 .l2{display:block;color:var(--neon);}
+h1 .l2{display:block;color:var(--neon);text-shadow:0 0 40px rgba(0,245,196,0.4);}
 .tagline{font-family:'IBM Plex Mono',monospace;font-size:0.85rem;color:var(--muted);line-height:1.7;max-width:440px;margin-bottom:2.5rem;border-left:2px solid var(--neon2);padding-left:1rem;}
 .ctas{display:flex;gap:1rem;flex-wrap:wrap;}
-.btn{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:0.8rem 1.8rem;border:1px solid;transition:all 0.25s;display:inline-block;}
+.btn{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:0.8rem 1.8rem;border:1px solid;transition:all 0.25s;display:inline-block;position:relative;overflow:hidden;}
+.btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);transition:left 0.5s;}
+.btn:hover::before{left:100%;}
 .btn-p{background:var(--neon);color:var(--bg);border-color:var(--neon);font-weight:700;}
-.btn-p:hover{background:transparent;color:var(--neon);}
+.btn-p:hover{background:transparent;color:var(--neon);box-shadow:0 0 20px rgba(0,245,196,0.3);}
 .btn-g{background:transparent;color:var(--text);border-color:var(--border);}
 .btn-g:hover{border-color:var(--neon);color:var(--neon);}
 
-/* HERO VISUAL */
+/* ── HERO VISUAL ── */
 .hero-right{display:flex;justify-content:center;align-items:center;position:relative;z-index:1;}
 #visual{width:460px;height:460px;position:relative;display:flex;align-items:center;justify-content:center;}
 .hint{position:absolute;bottom:-2rem;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;white-space:nowrap;}
 
-@keyframes spin{0%{transform:translate(-50%,-50%) rotateX(70deg) rotate(0deg);}100%{transform:translate(-50%,-50%) rotateX(70deg) rotate(360deg);}}
-@keyframes spin2{0%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(60deg) rotate(0deg);}100%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(60deg) rotate(360deg);}}
-@keyframes spin3{0%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(120deg) rotate(0deg);}100%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(120deg) rotate(360deg);}}
+/* OUTER GLOW RING */
+.glow-ring{
+  position:absolute;width:380px;height:380px;border-radius:50%;
+  background:conic-gradient(from 0deg,var(--neon),var(--neon2),var(--neon3),var(--neon2),var(--neon));
+  animation:spinring 8s linear infinite;
+  filter:blur(1px);
+  opacity:0.5;
+}
+.glow-ring-inner{
+  position:absolute;width:374px;height:374px;border-radius:50%;
+  background:var(--bg);
+}
+@keyframes spinring{to{transform:rotate(360deg);}}
+
+/* ORBIT RINGS */
+@keyframes orbit-spin{0%{transform:translate(-50%,-50%) rotateX(70deg) rotate(0deg);}100%{transform:translate(-50%,-50%) rotateX(70deg) rotate(360deg);}}
+@keyframes orbit-spin2{0%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(60deg) rotate(0deg);}100%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(60deg) rotate(360deg);}}
+@keyframes orbit-spin3{0%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(120deg) rotate(0deg);}100%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(120deg) rotate(360deg);}}
 .ring{position:absolute;border-radius:50%;border:1px solid;top:50%;left:50%;}
-.ring1{width:320px;height:320px;border-color:rgba(0,245,196,0.25);animation:spin 14s linear infinite;}
-.ring2{width:240px;height:240px;border-color:rgba(123,47,255,0.3);animation:spin2 9s linear infinite;}
-.ring3{width:400px;height:400px;border-color:rgba(255,60,110,0.15);animation:spin3 22s linear infinite;}
+.ring1{width:300px;height:300px;border-color:rgba(0,245,196,0.3);animation:orbit-spin 14s linear infinite;}
+.ring2{width:220px;height:220px;border-color:rgba(123,47,255,0.35);animation:orbit-spin2 9s linear infinite;}
+.ring3{width:370px;height:370px;border-color:rgba(255,60,110,0.18);animation:orbit-spin3 22s linear infinite;}
 
-@keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
-@keyframes glw{0%,100%{box-shadow:0 0 40px 8px rgba(0,245,196,0.25),0 0 80px 20px rgba(0,245,196,0.08);}50%{box-shadow:0 0 60px 18px rgba(0,245,196,0.45),0 0 120px 40px rgba(0,245,196,0.15);}}
-.core{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#1a2a2a,#050508);border:1px solid rgba(0,245,196,0.5);display:flex;align-items:center;justify-content:center;position:relative;z-index:10;animation:flt 4s ease-in-out infinite,glw 3s ease-in-out infinite;}
-.core-txt{font-family:'Space Mono',monospace;font-size:2rem;font-weight:700;color:var(--neon);text-shadow:0 0 20px var(--neon);}
+/* CORE SPHERE */
+@keyframes flt{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-14px) scale(1.02);}}
+@keyframes glw{0%,100%{box-shadow:0 0 40px 8px rgba(0,245,196,0.2),0 0 80px 20px rgba(0,245,196,0.07),inset 0 0 20px rgba(0,245,196,0.05);}50%{box-shadow:0 0 60px 18px rgba(0,245,196,0.4),0 0 120px 40px rgba(0,245,196,0.15),inset 0 0 30px rgba(0,245,196,0.1);}}
+.core{
+  width:130px;height:130px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#1a2a2a,#050508);
+  border:1px solid rgba(0,245,196,0.5);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:10;
+  animation:flt 4s ease-in-out infinite,glw 3s ease-in-out infinite;
+}
+.core-txt{font-family:'Space Mono',monospace;font-size:2rem;font-weight:700;color:var(--neon);text-shadow:0 0 20px var(--neon),0 0 40px rgba(0,245,196,0.4);}
 
+/* ORBITING PARTICLES */
 @keyframes orb1{0%{transform:rotate(0deg) translateX(175px) rotate(0deg);}100%{transform:rotate(360deg) translateX(175px) rotate(-360deg);}}
 @keyframes orb2{0%{transform:rotate(60deg) translateX(145px) rotate(-60deg);}100%{transform:rotate(-300deg) translateX(145px) rotate(300deg);}}
 @keyframes orb3{0%{transform:rotate(120deg) translateX(195px) rotate(-120deg);}100%{transform:rotate(480deg) translateX(195px) rotate(-480deg);}}
 @keyframes orb4{0%{transform:rotate(180deg) translateX(165px) rotate(-180deg);}100%{transform:rotate(-180deg) translateX(165px) rotate(180deg);}}
 @keyframes orb5{0%{transform:rotate(240deg) translateX(185px) rotate(-240deg);}100%{transform:rotate(600deg) translateX(185px) rotate(-600deg);}}
 @keyframes orb6{0%{transform:rotate(300deg) translateX(155px) rotate(-300deg);}100%{transform:rotate(-60deg) translateX(155px) rotate(60deg);}}
-.dot{position:absolute;width:8px;height:8px;border-radius:50%;top:50%;left:50%;margin:-4px 0 0 -4px;}
-.d1{background:var(--neon);box-shadow:0 0 8px var(--neon);animation:orb1 6s linear infinite;}
-.d2{background:var(--neon2);box-shadow:0 0 8px var(--neon2);animation:orb2 8s linear infinite;}
-.d3{background:var(--neon3);box-shadow:0 0 8px var(--neon3);animation:orb3 11s linear infinite;}
-.d4{background:var(--neon);box-shadow:0 0 6px var(--neon);animation:orb4 7s linear infinite;}
-.d5{background:var(--neon2);box-shadow:0 0 6px var(--neon2);animation:orb5 9s linear infinite;}
-.d6{background:var(--neon3);box-shadow:0 0 6px var(--neon3);animation:orb6 12s linear infinite;}
+.dot{position:absolute;border-radius:50%;top:50%;left:50%;}
+.d1{width:10px;height:10px;margin:-5px 0 0 -5px;background:var(--neon);box-shadow:0 0 12px var(--neon),0 0 24px rgba(0,245,196,0.5);animation:orb1 6s linear infinite;}
+.d2{width:8px;height:8px;margin:-4px 0 0 -4px;background:var(--neon2);box-shadow:0 0 10px var(--neon2);animation:orb2 8s linear infinite;}
+.d3{width:10px;height:10px;margin:-5px 0 0 -5px;background:var(--neon3);box-shadow:0 0 12px var(--neon3);animation:orb3 11s linear infinite;}
+.d4{width:6px;height:6px;margin:-3px 0 0 -3px;background:var(--neon);box-shadow:0 0 8px var(--neon);animation:orb4 7s linear infinite;}
+.d5{width:8px;height:8px;margin:-4px 0 0 -4px;background:var(--neon2);box-shadow:0 0 10px var(--neon2);animation:orb5 9s linear infinite;}
+.d6{width:6px;height:6px;margin:-3px 0 0 -3px;background:var(--neon3);box-shadow:0 0 8px var(--neon3);animation:orb6 12s linear infinite;}
+
+/* FLOATING DATA BITS */
+@keyframes floatbit{0%{transform:translateY(0) translateX(0);opacity:0;}20%{opacity:1;}80%{opacity:1;}100%{transform:translateY(-120px) translateX(30px);opacity:0;}}
+.bit{position:absolute;font-family:'IBM Plex Mono',monospace;font-size:0.55rem;color:var(--neon);opacity:0;pointer-events:none;z-index:5;}
+.bit1{bottom:30%;left:20%;animation:floatbit 4s ease-out 0s infinite;}
+.bit2{bottom:40%;right:15%;animation:floatbit 5s ease-out 1s infinite;color:var(--neon2);}
+.bit3{bottom:25%;left:40%;animation:floatbit 3.5s ease-out 2s infinite;color:var(--neon3);}
+.bit4{bottom:50%;right:30%;animation:floatbit 4.5s ease-out 0.5s infinite;}
+.bit5{bottom:35%;left:55%;animation:floatbit 3s ease-out 1.5s infinite;color:var(--neon2);}
 
 /* SECTIONS */
 section{padding:7rem 4rem;max-width:1200px;margin:0 auto;}
@@ -88,8 +132,9 @@ section{padding:7rem 4rem;max-width:1200px;margin:0 auto;}
 .bio{font-family:'IBM Plex Mono',monospace;font-size:0.9rem;line-height:1.9;color:#b0b0c8;}
 .bio strong{color:var(--neon);font-weight:500;}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);}
-.stat{background:var(--card);padding:1.5rem;text-align:center;}
-.stat-n{font-family:'Space Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--neon);display:block;}
+.stat{background:var(--card);padding:1.5rem;text-align:center;transition:background 0.2s;}
+.stat:hover{background:#101020;}
+.stat-n{font-family:'Space Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--neon);display:block;text-shadow:0 0 15px rgba(0,245,196,0.4);}
 .stat-l{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.3rem;}
 
 /* PROJECTS */
@@ -106,11 +151,12 @@ section{padding:7rem 4rem;max-width:1200px;margin:0 auto;}
 .tag.g{border-color:var(--neon);color:var(--neon);}
 .tag.p{border-color:var(--neon2);color:var(--neon2);}
 .tag.r{border-color:var(--neon3);color:var(--neon3);}
-.sev{display:inline-flex;align-items:center;gap:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--neon3);margin-bottom:0.75rem;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 .dot-r{width:6px;height:6px;border-radius:50%;background:var(--neon3);display:inline-block;animation:pulse 1.5s infinite;}
-.proj-link{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--neon);text-decoration:none;}
-.proj-link:hover{text-decoration:underline;}
+.sev{display:inline-flex;align-items:center;gap:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--neon3);margin-bottom:0.75rem;}
+.proj-link{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--neon);text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;transition:gap 0.2s;}
+.proj-link:hover{gap:0.7rem;}
+.proj-link::after{content:'↗';}
 
 /* SKILLS */
 .skills-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--border);border:1px solid var(--border);}
@@ -131,33 +177,40 @@ section{padding:7rem 4rem;max-width:1200px;margin:0 auto;}
 .t-school{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;}
 .t-note{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:#6868a0;line-height:1.7;}
 .certs{display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:2rem;}
-.cert{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.6rem 1.2rem;border:1px solid var(--border);color:var(--muted);letter-spacing:0.06em;transition:all 0.2s;}
-.cert:hover{border-color:var(--neon);color:var(--neon);}
+.cert{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.6rem 1.2rem;border:1px solid var(--border);color:var(--muted);letter-spacing:0.06em;transition:all 0.2s;text-decoration:none;cursor:pointer;}
+.cert:hover{border-color:var(--neon);color:var(--neon);background:rgba(0,245,196,0.04);}
 
 /* CONTACT */
 #contact{text-align:center;}
 .contact-intro{font-family:'IBM Plex Mono',monospace;font-size:0.85rem;color:var(--muted);margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.8;}
-.email-link{font-size:clamp(1rem,2vw,1.5rem);font-family:'IBM Plex Mono',monospace;color:var(--text);text-decoration:none;border-bottom:1px solid var(--neon);padding-bottom:0.3rem;transition:color 0.2s;word-break:break-all;}
-.email-link:hover{color:var(--neon);}
+#eml{
+  font-size:clamp(1rem,2vw,1.5rem);
+  font-family:'IBM Plex Mono',monospace;
+  color:var(--text);text-decoration:none;
+  border-bottom:1px solid var(--neon);
+  padding-bottom:0.3rem;transition:color 0.2s,text-shadow 0.2s;
+  word-break:break-all;
+}
+#eml:hover{color:var(--neon);text-shadow:0 0 20px rgba(0,245,196,0.5);}
 .socials{display:flex;justify-content:center;gap:1rem;margin-top:3rem;flex-wrap:wrap;}
 .social{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--muted);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.4rem;border:1px solid var(--border);transition:all 0.25s;}
-.social:hover{color:var(--neon);border-color:var(--neon);}
+.social:hover{color:var(--neon);border-color:var(--neon);background:rgba(0,245,196,0.04);}
 
 footer{border-top:1px solid var(--border);padding:2rem 4rem;display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted);}
-
-/* REVEAL - always visible */
-.reveal{opacity:1;transform:none;}
 
 @media(max-width:900px){
   nav{padding:1rem 1.5rem;}
   .nav-links{display:none;}
   #hero{grid-template-columns:1fr;padding:7rem 1.5rem 3rem;gap:3rem;}
   .hero-right{order:-1;}
-  #visual{width:280px;height:280px;}
-  .ring1{width:195px;height:195px;}
+  #visual{width:300px;height:300px;}
+  .ring1{width:200px;height:200px;}
   .ring2{width:150px;height:150px;}
   .ring3{width:250px;height:250px;}
-  .d1,.d2,.d3,.d4,.d5,.d6{--r:100px;}
+  .glow-ring,.glow-ring-inner{width:250px;height:250px;}
+  .glow-ring-inner{width:244px;height:244px;}
+  .d1,.d2,.d3,.d4,.d5,.d6{animation-name:orb1sm;}
+  @keyframes orb1sm{0%{transform:rotate(0deg) translateX(110px) rotate(0deg);}100%{transform:rotate(360deg) translateX(110px) rotate(-360deg);}}
   section{padding:4rem 1.5rem;}
   .about-grid{grid-template-columns:1fr;gap:2.5rem;}
   .proj-grid{grid-template-columns:1fr;}
@@ -167,11 +220,6 @@ footer{border-top:1px solid var(--border);padding:2rem 4rem;display:flex;justify
 </style>
 </head>
 <body>
-
-<div id="loader">
-  <div class="ld-text">Initializing // abrar.dar</div>
-  <div class="ld-bar"><div class="ld-fill"></div></div>
-</div>
 
 <nav>
   <a href="#" class="logo">AD<span>.sh</span></a>
@@ -184,9 +232,10 @@ footer{border-top:1px solid var(--border);padding:2rem 4rem;display:flex;justify
   </ul>
 </nav>
 
+<!-- HERO -->
 <div id="hero">
   <div class="grid-bg"></div>
-  <div class="hero-left reveal">
+  <div class="hero-left">
     <div class="hero-tag">Security Researcher &amp; AI Engineer</div>
     <h1><span class="l1">Abrar</span><span class="l2">Dar</span></h1>
     <p class="tagline">Bridging the Gap Between Intelligent Systems and Offensive Security.</p>
@@ -195,27 +244,41 @@ footer{border-top:1px solid var(--border);padding:2rem 4rem;display:flex;justify
       <a href="#contact" class="btn btn-g">Get In Touch</a>
     </div>
   </div>
-  <div class="hero-right reveal">
+
+  <div class="hero-right">
     <div id="visual">
+      <!-- Outer spinning gradient ring -->
+      <div class="glow-ring"></div>
+      <div class="glow-ring-inner"></div>
+      <!-- Orbit rings -->
       <div class="ring ring1"></div>
       <div class="ring ring2"></div>
       <div class="ring ring3"></div>
+      <!-- Core -->
       <div class="core"><span class="core-txt">AD</span></div>
+      <!-- Orbiting dots -->
       <div class="dot d1"></div>
       <div class="dot d2"></div>
       <div class="dot d3"></div>
       <div class="dot d4"></div>
       <div class="dot d5"></div>
       <div class="dot d6"></div>
+      <!-- Floating data bits -->
+      <div class="bit bit1">01101</div>
+      <div class="bit bit2">CVE</div>
+      <div class="bit bit3">0xFF</div>
+      <div class="bit bit4">RCE</div>
+      <div class="bit bit5">BERT</div>
       <div class="hint">security researcher · ai engineer</div>
     </div>
   </div>
 </div>
 
+<!-- ABOUT -->
 <section id="about">
   <div class="sec-label">Profile</div>
   <h2 class="sec-title">About Me</h2>
-  <div class="about-grid reveal">
+  <div class="about-grid">
     <div>
       <p class="bio">3rd-year <strong>B.Tech AIML student</strong> and independent security researcher. I specialize in identifying critical vulnerabilities and building <strong>privacy-first AI tools</strong>.<br/><br/>From triaging <strong>RCE bugs in GitHub Actions</strong> to engineering AI-powered CLI security tools, I focus on turning complex vulnerabilities into robust technical solutions. My work spans the intersection of <strong>machine learning systems</strong> and <strong>offensive security research</strong>.<br/><br/>Based in <strong>Mohali, India</strong> — open to remote collaboration, bug bounty programs, and research partnerships.</p>
     </div>
@@ -228,47 +291,49 @@ footer{border-top:1px solid var(--border);padding:2rem 4rem;display:flex;justify
   </div>
 </section>
 
+<!-- PROJECTS -->
 <section id="projects" style="padding-top:0">
   <div class="sec-label">Research &amp; Engineering</div>
   <h2 class="sec-title">Featured Work</h2>
-  <div class="proj-grid reveal">
+  <div class="proj-grid">
     <div class="proj">
       <div class="proj-num">01 // SECURITY RESEARCH</div>
       <div class="sev"><span class="dot-r"></span> HIGH — CVSS 7.0–8.9</div>
       <h3 class="proj-title">Odoo 18.0 Vulnerability</h3>
-      <p class="proj-desc">Discovered unauthorized access to the res.users model in Odoo CE 18.0, exposing credential data. Deep ORM exploitation and API-based enumeration. Reported via Intigriti responsible disclosure.</p>
+      <p class="proj-desc">Unauthorized access to res.users model in Odoo CE 18.0, exposing credential data. Deep ORM exploitation and API-based enumeration. Reported via Intigriti responsible disclosure.</p>
       <div class="tags"><span class="tag r">Intigriti</span><span class="tag">ORM Exploitation</span><span class="tag">API Enumeration</span><span class="tag">Auth Bypass</span></div>
-      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">Read Report ↗</a>
+      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">Read Report</a>
     </div>
     <div class="proj">
       <div class="proj-num">02 // AI + SECURITY</div>
       <h3 class="proj-title">InboxZero CLI</h3>
-      <p class="proj-desc">AI-powered Gmail cleanup tool using fine-tuned DistilBERT. Processes emails 100% on-device for maximum privacy. Auto-deletes spam with 90%+ confidence using SHA-3 hardware hashing.</p>
+      <p class="proj-desc">AI-powered Gmail cleanup using fine-tuned DistilBERT. 100% on-device processing for maximum privacy. Auto-deletes spam with 90%+ confidence using SHA-3 hardware hashing.</p>
       <div class="tags"><span class="tag g">Python 3.10+</span><span class="tag g">DistilBERT</span><span class="tag">HuggingFace</span><span class="tag">OAuth 2.0</span></div>
-      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">GitHub Repository ↗</a>
+      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">GitHub Repository</a>
     </div>
     <div class="proj">
       <div class="proj-num">03 // CRYPTOGRAPHY</div>
       <h3 class="proj-title">Cryptomancer</h3>
-      <p class="proj-desc">Modern desktop encryption suite supporting AES, DES, and RSA. Secure key pair generation (.pem), real-time action logging, clean GUI built with ttkbootstrap. Fully unit tested.</p>
+      <p class="proj-desc">Modern desktop encryption suite supporting AES, DES, and RSA. Secure .pem key pair generation, real-time action logging, clean GUI via ttkbootstrap. Fully unit tested.</p>
       <div class="tags"><span class="tag p">Python</span><span class="tag p">AES / DES / RSA</span><span class="tag">ttkbootstrap</span><span class="tag">Unit Testing</span></div>
-      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">GitHub Repository ↗</a>
+      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">GitHub Repository</a>
     </div>
     <div class="proj">
       <div class="proj-num">04 // CVE RESEARCH</div>
       <div class="sev"><span class="dot-r"></span> RCE — CWE-20/94</div>
       <h3 class="proj-title">GitHub Actions RCE</h3>
-      <p class="proj-desc">Command Injection in anchore/grype GitHub Action. Arbitrary command execution on GitHub-hosted runners via unsafe input validation in CI/CD pipelines. Reported via HackerOne.</p>
+      <p class="proj-desc">Command Injection in anchore/grype GitHub Action. Arbitrary command execution on GitHub-hosted runners via unsafe CI/CD input validation. Reported via HackerOne.</p>
       <div class="tags"><span class="tag r">HackerOne</span><span class="tag r">RCE</span><span class="tag">CI/CD Security</span><span class="tag">CWE-20</span></div>
-      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">Research Documentation ↗</a>
+      <a href="https://github.com/abrarxploit" target="_blank" class="proj-link">Research Documentation</a>
     </div>
   </div>
 </section>
 
-<section id="skills">
+<!-- SKILLS -->
+<section id="skills" style="padding-top:0">
   <div class="sec-label">Technical Stack</div>
   <h2 class="sec-title">Skills &amp; Tools</h2>
-  <div class="skills-grid reveal">
+  <div class="skills-grid">
     <div class="sg"><div class="sg-title">Languages</div><ul><li>Python (Primary)</li><li>Java (Basics)</li><li>C (Basics)</li><li>HTML / CSS</li></ul></div>
     <div class="sg"><div class="sg-title">Cybersecurity</div><ul><li>Bug Bounty Hunting</li><li>Web App Pen Testing</li><li>Vulnerability Assessment</li><li>Responsible Disclosure</li><li>API Security Testing</li><li>OWASP Top 10</li><li>Kali Linux / Metasploit</li><li>Nmap / SQLMap / Wireshark</li></ul></div>
     <div class="sg"><div class="sg-title">AI / ML</div><ul><li>HuggingFace Transformers</li><li>DistilBERT / BERT</li><li>Google OAuth 2.0</li><li>Gmail API</li><li>MongoDB (Basics)</li><li>Google Cloud (Basics)</li></ul></div>
@@ -278,10 +343,11 @@ footer{border-top:1px solid var(--border);padding:2rem 4rem;display:flex;justify
   </div>
 </section>
 
-<section id="education">
+<!-- EDUCATION -->
+<section id="education" style="padding-top:0">
   <div class="sec-label">Academic Journey</div>
   <h2 class="sec-title">Education &amp; Certifications</h2>
-  <div class="timeline reveal">
+  <div class="timeline">
     <div class="titem">
       <div class="t-period">2024 — 2027 · Ongoing</div>
       <div class="t-deg">B.Tech — Artificial Intelligence &amp; Machine Learning</div>
@@ -307,24 +373,25 @@ footer{border-top:1px solid var(--border);padding:2rem 4rem;display:flex;justify
       <div class="t-note">Threat analysis, penetration testing, ethical hacking, and network security.</div>
     </div>
   </div>
-  <div style="margin-top:3rem" class="reveal">
+  <div style="margin-top:3rem">
     <div class="sec-label">Certifications</div>
     <div class="certs">
-      <div class="cert">CompTIA Security+</div>
-      <div class="cert">Vue.js Certificate</div>
-      <div class="cert">HTML &amp; CSS Certificate</div>
-      <div class="cert">HackerRank Certification</div>
-      <div class="cert">Introduction to Cybersecurity</div>
-      <div class="cert">Course Completion Certificate</div>
+      <a href="https://www.linkedin.com/in/abrardar/details/certifications/" target="_blank" class="cert">CompTIA Security+</a>
+      <a href="https://www.linkedin.com/in/abrardar/details/certifications/" target="_blank" class="cert">Vue.js Certificate</a>
+      <a href="https://www.linkedin.com/in/abrardar/details/certifications/" target="_blank" class="cert">HTML &amp; CSS Certificate</a>
+      <a href="https://www.linkedin.com/in/abrardar/details/certifications/" target="_blank" class="cert">HackerRank Certification</a>
+      <a href="https://www.linkedin.com/in/abrardar/details/certifications/" target="_blank" class="cert">Introduction to Cybersecurity</a>
+      <a href="https://www.linkedin.com/in/abrardar/details/certifications/" target="_blank" class="cert">Course Completion Certificate</a>
     </div>
   </div>
 </section>
 
+<!-- CONTACT -->
 <section id="contact">
   <div class="sec-label">Get In Touch</div>
   <h2 class="sec-title" style="margin-bottom:1.5rem">Let's Work Together</h2>
   <p class="contact-intro">Open to security research collaborations, bug bounty partnerships, AI/ML projects, and freelance opportunities.</p>
-  <a href="#" class="email-link" id="eml">Loading...</a>
+  <a href="#" id="eml">&#97;&#98;&#114;&#97;&#114;&#100;&#97;&#114;&#46;&#48;&#48;&#48;&#48;&#51;&#48;&#56;&#53;&#51;&#56;&#57;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a>
   <div class="socials">
     <a href="https://github.com/abrarxploit" target="_blank" class="social">GitHub</a>
     <a href="https://linkedin.com/in/abrardar" target="_blank" class="social">LinkedIn</a>
@@ -339,22 +406,12 @@ footer{border-top:1px solid var(--border);padding:2rem 4rem;display:flex;justify
   <span>abrarxploit · Security Researcher · AIML Engineer</span>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
-// Build email via JS to bypass Cloudflare obfuscation
-(function() {
-  var u = 'abrardar.00003085389';
-  var d = 'gmail.com';
+<script>
+// Fix email href — Cloudflare can't mangle an already-rendered text node
+(function(){
   var el = document.getElementById('eml');
-  if (el) {
-    el.href = 'mailto:' + u + '@' + d;
-    el.textContent = u + '@' + d;
-  }
+  if(el) el.href = 'mai' + 'lto:' + el.textContent.trim();
 })();
-</script><script>
-// Loader is hidden via CSS animation - no JS needed
-
-// Scroll reveal
-var els = document.querySelectorAll('.reveal');
-var io = new IntersectionObserver(function(entries) {
-  entries.forEach(function(e) {
-    if (e.isIntersecting) e.target.classList.add
+</script>
+</body>
+</html>
